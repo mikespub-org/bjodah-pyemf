@@ -2,9 +2,6 @@
 
 # Test of bounds checking and 16bit/32bit versions of polygon, polyline, etc.
 
-from __future__ import print_function
-from builtins import str
-from builtins import range
 import pyemf
 
 width=8

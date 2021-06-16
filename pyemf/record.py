@@ -18,10 +18,7 @@
 # Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
 # Boston, MA  02110-1301, USA.
 
-from __future__ import print_function, division
 
-from builtins import str
-from builtins import object
 import struct
 
 from .field import Field, StructFormat
@@ -39,7 +36,7 @@ def FormatFactory(fmt):
     return fmtobj
 
 
-class RecordFormat(object):
+class RecordFormat:
     default_endian = "<"
 
     def __init__(self, typedef):
@@ -192,14 +189,14 @@ class RecordFormat(object):
             fmt = self.fmtmap[name]
             val = fmt.getString(name, obj.values[name])
             try:
-                txt.write("\t%-20s: %s\n" % (name, val))
+                txt.write("\t{:<20}: {}\n".format(name, val))
             except UnicodeEncodeError:
                 txt.write("\t%-20s: <<<BAD UNICODE STRING>>> %s\n" %
                           (name, repr(val)))
         return txt.getvalue()
 
 
-class Record(object):
+class Record:
 
     """baseclass for binary records"""
 
@@ -381,7 +378,7 @@ class _EMR_UNKNOWN(Record):
             for name in self.format.names:
                 fmt = self.format.fmtmap[name]
                 size = fmt.calcNumBytes(self, name)
-                print("  name=%s size=%s" % (name, size))
+                print("  name={} size={}".format(name, size))
             print(self)
             raise TypeError
 

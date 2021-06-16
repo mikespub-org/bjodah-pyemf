@@ -1,10 +1,5 @@
 #!/usr/bin/env python
 
-from __future__ import print_function
-from future import standard_library
-standard_library.install_aliases()
-from builtins import str
-from builtins import object
 import os,sys,re
 import struct
 from io import StringIO
@@ -25,7 +20,7 @@ __license__ = "LGPL"
 
 debug=False
 
-class Member(object):
+class Member:
     def __init__(self,fmt,size=1,num=1,offset=None):
         # Format string, if applicable
         self.fmt=fmt
@@ -129,7 +124,7 @@ class StructFormat(Member):
         return struct.pack(self.fmt,value)
 
     def str_color(self,val):
-        return "red=0x%02x green=0x%02x blue=0x%02x" % ((val&0xff),((val&0xff00)>>8),((val&0xff0000)>>16))
+        return "red=0x{:02x} green=0x{:02x} blue=0x{:02x}".format((val&0xff),((val&0xff00)>>8),((val&0xff0000)>>16))
 
     def getString(self,name,val):
         if name.endswith("olor"):
@@ -202,7 +197,7 @@ class String(Member):
     def setDefault(self,default):
         if default is None:
             if self.size==2:
-                default=u''
+                default=''
             else:
                 default=''
         self.default=default
@@ -324,7 +319,7 @@ def FormatFactory(fmt):
     return fmtobj
 
 
-class RecordFormat(object):
+class RecordFormat:
     default_endian="<"
 
     def __init__(self,typedef):
@@ -458,13 +453,13 @@ class RecordFormat(object):
             fmt=self.fmtmap[name]
             val=fmt.getString(name,obj.values[name])
             try:
-                txt.write("\t%-20s: %s\n" % (name,val))
+                txt.write("\t{:<20}: {}\n".format(name,val))
             except UnicodeEncodeError:
-                txt.write("\t%-20s: <<<BAD UNICODE STRING>>> %s\n" % (name,repr(val)))
+                txt.write("\t{:<20}: <<<BAD UNICODE STRING>>> {}\n".format(name,repr(val)))
         return txt.getvalue()
 
 
-class Record(object):
+class Record:
     """baseclass for binary records"""
 
     format=None

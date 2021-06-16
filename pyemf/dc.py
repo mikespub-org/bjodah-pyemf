@@ -18,13 +18,11 @@
 # Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
 # Boston, MA  02110-1301, USA.
 
-from __future__ import print_function, division
 
-from builtins import object
 from .utils import RGB
 
 
-class _DC(object):
+class _DC:
 
     """Device Context state machine.  This is used to simulate the
     state of the GDI buffer so that some user commands can return

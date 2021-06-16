@@ -1,4 +1,3 @@
-from __future__ import print_function
 from .constants import *
 from .field import *
 from .record import _EMR_UNKNOWN
@@ -521,10 +520,10 @@ class META_EXTTEXTOUT(META_UNKNOWN):
             finally:
                 self.nChars = old_nChars
         self.unhandleddata = fh.getvalue()
-        return super(META_EXTTEXTOUT, self).sizeExtra()
+        return super().sizeExtra()
 
     def unserializeExtra(self, data):
-        super(META_EXTTEXTOUT, self).unserializeExtra(data)
+        super().unserializeExtra(data)
         ptr = 0
         if self.fwOpts & (ETO_OPAQUE | ETO_CLIPPED):
             fmt = self.__class__._rclBounds
@@ -588,7 +587,7 @@ class META_STRETCHDIB(META_UNKNOWN):
 
     def unserializeExtra(self, data):
         # self.write_bitmap("test.bmp", data)
-        super(META_STRETCHDIB, self).unserializeExtra(data)
+        super().unserializeExtra(data)
 
     def write_bitmap(self, file_name, data):
         bmp_header_len = 14

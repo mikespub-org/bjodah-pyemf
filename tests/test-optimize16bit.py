@@ -2,9 +2,6 @@
 
 # Test of bounds checking and 16bit/32bit versions of polygon, polyline, etc.
 
-from __future__ import print_function
-from __future__ import division
-from builtins import str
 from past.utils import old_div
 import pyemf
 

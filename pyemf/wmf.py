@@ -19,16 +19,13 @@
 # Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
 # Boston, MA  02110-1301, USA.
 
-from __future__ import print_function, division
 
-from builtins import range
-from builtins import object
 from .constants import *
 from .dc import _DC
 from . import meta
 
 
-class WMF(object):
+class WMF:
 
     """
 Reference page of the public API for WMF metafile creation.  See

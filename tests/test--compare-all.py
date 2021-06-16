@@ -1,9 +1,5 @@
 #!/usr/bin/env python
 
-from __future__ import print_function
-from builtins import chr
-from builtins import range
-from builtins import object
 import os,sys
 import glob
 import filecmp
@@ -37,7 +33,7 @@ def dumpfile(filename):
         fh=open(filename+".hex", "w")
         fh.write(result)
 
-class Comparison(object):
+class Comparison:
     def __init__(self):
         self.verbose=False
         self.total=0

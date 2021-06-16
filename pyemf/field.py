@@ -18,10 +18,7 @@
 # Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
 # Boston, MA  02110-1301, USA.
 
-from __future__ import print_function, division
 
-from builtins import str
-from builtins import object
 import struct
 import warnings
 
@@ -59,7 +56,7 @@ def _roundn(num, n):
 # A structrecord class for EMF strings
 
 
-class Field(object):
+class Field:
 
     def __init__(self, fmt, size=1, num=1, offset=None):
         # Format string, if applicable
@@ -172,7 +169,7 @@ class StructFormat(Field):
         return struct_pack(self.fmt, value)
 
     def str_color(self, val):
-        return "red=0x%02x green=0x%02x blue=0x%02x" % ((val & 0xff), ((val & 0xff00) >> 8), ((val & 0xff0000) >> 16))
+        return "red=0x{:02x} green=0x{:02x} blue=0x{:02x}".format((val & 0xff), ((val & 0xff00) >> 8), ((val & 0xff0000) >> 16))
 
     def getString(self, name, val):
         if name.endswith("olor"):
@@ -247,7 +244,7 @@ class String(Field):
     def setDefault(self, default):
         if default is None:
             if self.size == 2:
-                default = u''
+                default = ''
             else:
                 default = ''
         self.default = default
@@ -453,7 +450,7 @@ class EMFString(Field):
     def setDefault(self, default):
         if default is None:
             if self.size == 2:
-                default = u''
+                default = ''
             else:
                 default = ''
         self.default = default

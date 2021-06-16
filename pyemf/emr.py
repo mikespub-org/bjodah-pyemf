@@ -18,7 +18,6 @@
 # Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
 # Boston, MA  02110-1301, USA.
 
-from __future__ import print_function, division
 
 from .record import _EMR_UNKNOWN
 from .field import *
@@ -73,7 +72,7 @@ class _HEADER(_EMR_UNKNOWN):
 
         self.description = description
         if len(description) > 0:
-            self.description = u'pyemf' + u'\0' + description + u'\0\0'
+            self.description = 'pyemf' + '\0' + description + '\0\0'
         self.nDescription = len(self.description)
 
     def setBounds(self, dc, scaleheader):
@@ -880,7 +879,7 @@ class _EXTTEXTOUTW(_EXTTEXTOUTA):
         (EMFString(num='nChars', size=2, offset='offString'), 'string'),
     ]
 
-    def __init__(self, x=0, y=0, txt=u''):
+    def __init__(self, x=0, y=0, txt=''):
         _EXTTEXTOUTA.__init__(self, x, y, txt)
         self.charsize = 2
 

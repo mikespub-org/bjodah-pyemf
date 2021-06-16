@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 
-from __future__ import print_function
-from future import standard_library
-standard_library.install_aliases()
 import os,sys,re,os.path
 from io import StringIO
 from datetime import date
@@ -168,13 +165,13 @@ if __name__=='__main__':
 
     if options.keyvalue:
         for keyword,value in options.keyvalue:
-            print("keyword=%s value=%s" % (keyword,value))
+            print("keyword={} value={}".format(keyword,value))
             remap(keyword,value)
 
     if options.remapkey:
         for key1,key2 in options.remapkey:
             value=namespace[key2]
-            print("keyword=%s value=%s" % (key1,value))
+            print("keyword={} value={}".format(key1,value))
             remap(key1,value)
 
     if options.template:

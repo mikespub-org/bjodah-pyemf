@@ -18,10 +18,7 @@
 # Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
 # Boston, MA  02110-1301, USA.
 
-from __future__ import print_function, division
 
-from builtins import range
-from builtins import object
 import struct
 
 from .constants import *
@@ -32,7 +29,7 @@ from .compat import *
 from .record import _EMR_UNKNOWN
 
 
-class EMF(object):
+class EMF:
 
     """
 Reference page of the public API for enhanced metafile creation.  See
