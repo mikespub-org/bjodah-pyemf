@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-useEMF=True
+useEMF=False
 
 import sys
 

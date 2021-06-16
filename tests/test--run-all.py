@@ -27,6 +27,7 @@ def dump(fh, length=8):
     return result
 
 def dumpfile(filename):
+    if not os.path.exists(filename): return
     fh=open(filename, "rb")
     if fh:
         result=dump(fh)
