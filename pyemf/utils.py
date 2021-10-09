@@ -19,21 +19,19 @@
 # Boston, MA  02110-1301, USA.
 
 
-
 def RGB(r, g, b):
     """
-Pack integer color values into a 32-bit integer format.
+    Pack integer color values into a 32-bit integer format.
 
-@param r: 0 - 255 or 0.0 - 1.0 specifying red
-@param g: 0 - 255 or 0.0 - 1.0 specifying green
-@param b: 0 - 255 or 0.0 - 1.0 specifying blue
-@return: single integer that should be used when any function needs a color value
-@rtype: int
-@type r: int or float
-@type g: int or float
-@type b: int or float
-
-"""
+    @param r: 0 - 255 or 0.0 - 1.0 specifying red
+    @param g: 0 - 255 or 0.0 - 1.0 specifying green
+    @param b: 0 - 255 or 0.0 - 1.0 specifying blue
+    @return: single integer that should be used when any function needs a color value
+    @rtype: int
+    @type r: int or float
+    @type g: int or float
+    @type b: int or float
+    """
 
     if isinstance(r, float):
         r = int(255 * r)
@@ -52,17 +50,15 @@ Pack integer color values into a 32-bit integer format.
 
 def _normalizeColor(c):
     """
-Normalize the input into a packed integer.  If the input is a tuple,
-pass it through L{RGB} to generate the color value.
+    Normalize the input into a packed integer.  If the input is a tuple,
+    pass it through L{RGB} to generate the color value.
 
-@param c: color
-@type c: int or (r,g,b) tuple
-@return: packed integer color from L{RGB}
-@rtype: int
-"""
+    @param c: color
+    @type c: int or (r,g,b) tuple
+    @return: packed integer color from L{RGB}
+    @rtype: int"""
     if isinstance(c, int):
         return c
     if isinstance(c, tuple) or isinstance(c, list):
         return RGB(*c)
-    raise TypeError(
-        "Color must be specified as packed integer or 3-tuple (r,g,b)")
+    raise TypeError("Color must be specified as packed integer or 3-tuple (r,g,b)")

@@ -55,7 +55,7 @@ class RecordFormat:
 
         self.debug = 0
 
-        self.fmt = ''
+        self.fmt = ""
         self.setFormat(typedef)
 
     def getDefaults(self):
@@ -79,8 +79,9 @@ class RecordFormat:
             raise AttributeError("format must be a list")
         if self.debug:
             print(
-                "current struct=%s size=%d\n  names=%s" % (
-                    self.fmt, self.minstructsize, self.names))
+                "current struct=%s size=%d\n  names=%s"
+                % (self.fmt, self.minstructsize, self.names)
+            )
 
     def appendFormat(self, typecode, name, defaultvalue):
 
@@ -93,14 +94,14 @@ class RecordFormat:
             self.default[name] = defaultvalue
 
         elif isinstance(typecode, Field):
-            self.fmt += '{' + typecode.__class__.__name__ + '}'
+            self.fmt += "{" + typecode.__class__.__name__ + "}"
             if defaultvalue is not None:
                 typecode.setDefault(defaultvalue)
             self.fmtmap[name] = typecode
             self.default[name] = self.fmtmap[name].getDefault()
 
         else:
-            self.fmt += '{' + typecode.__class__.__name__ + '}'
+            self.fmt += "{" + typecode.__class__.__name__ + "}"
             self.fmtmap[name] = typecode(defaultvalue)
             self.default[name] = self.fmtmap[name].getDefault()
         self.minstructsize += self.fmtmap[name].getNumBytes()
@@ -157,11 +158,14 @@ class RecordFormat:
             # print output[name]
             if refname and output[name]:
                 if self.debug:
-                    print("pack: %s has offset %s, was=%d now=%d" %
-                          (name, refname, values[refname], size + alreadypacked))
+                    print(
+                        "pack: %s has offset %s, was=%d now=%d"
+                        % (name, refname, values[refname], size + alreadypacked)
+                    )
                 values[refname] = size + alreadypacked
                 output[refname] = self.fmtmap[refname].pack(
-                    obj, refname, values[refname])
+                    obj, refname, values[refname]
+                )
 
             # also need to check if a dependent length needs to be updated
             refname = fmt.hasNumReference()
@@ -169,11 +173,14 @@ class RecordFormat:
             if refname and output[name]:
                 newnum = fmt.calcNum(obj, name)
                 if self.debug:
-                    print("pack: %s has num %s, was=%d now=%d" %
-                          (name, refname, values[refname], newnum))
+                    print(
+                        "pack: %s has num %s, was=%d now=%d"
+                        % (name, refname, values[refname], newnum)
+                    )
                 values[refname] = newnum
                 output[refname] = self.fmtmap[refname].pack(
-                    obj, refname, values[refname])
+                    obj, refname, values[refname]
+                )
 
             size += len(output[name])
 
@@ -189,10 +196,9 @@ class RecordFormat:
             fmt = self.fmtmap[name]
             val = fmt.getString(name, obj.values[name])
             try:
-                txt.write("\t{:<20}: {}\n".format(name, val))
+                txt.write(f"\t{name:<20}: {val}\n")
             except UnicodeEncodeError:
-                txt.write("\t%-20s: <<<BAD UNICODE STRING>>> %s\n" %
-                          (name, repr(val)))
+                txt.write("\t%-20s: <<<BAD UNICODE STRING>>> %s\n" % (name, repr(val)))
         return txt.getvalue()
 
 
@@ -209,7 +215,10 @@ class Record:
         # pick up any undefined class attributes from their
         # superclasses, so we have to check if this is a subclass with
         # a different typedef
-        if self.__class__.format == None or self.__class__.typedef != self.format.typedef:
+        if (
+            self.__class__.format == None
+            or self.__class__.typedef != self.format.typedef
+        ):
             # if self.debug: print "creating format for %d" % id
             self.__class__.format = RecordFormat(self.__class__.typedef)
 
@@ -221,30 +230,28 @@ class Record:
         of the object.  This is only called when the standard
         attribute lookup fails on this object, so we don't have to
         handle the case where name is an actual attribute of self."""
-        f = Record.__getattribute__(self, 'format')
+        f = Record.__getattribute__(self, "format")
         try:
             if name in f.names:
-                v = Record.__getattribute__(self, 'values')
+                v = Record.__getattribute__(self, "values")
                 return v[name]
         except IndexError:
-            raise IndexError(
-                "name=%s index=%d values=%s" % (name, index, str(v)))
+            raise IndexError("name=%s index=%d values=%s" % (name, index, str(v)))
         raise AttributeError("%s not defined in EMR object" % name)
 
     def __setattr__(self, name, value):
         """Set a value in the object, propagating through to
         self.values[] if the name is in the typedef list."""
-        f = Record.__getattribute__(self, 'format')
+        f = Record.__getattribute__(self, "format")
         try:
             if f and name in f.names:
-                v = Record.__getattribute__(self, 'values')
+                v = Record.__getattribute__(self, "values")
                 v[name] = value
             else:
                 # it's not an automatically serializable item, so store it.
                 self.__dict__[name] = value
         except IndexError:
-            raise IndexError(
-                "name=%s index=%d values=%s" % (name, index, str(v)))
+            raise IndexError("name=%s index=%d values=%s" % (name, index, str(v)))
 
 
 class _EMR_UNKNOWN(Record):
@@ -253,7 +260,7 @@ class _EMR_UNKNOWN(Record):
     """baseclass for EMR objects"""
     emr_id = 0
 
-    twobytepadding = b'\0' * 2
+    twobytepadding = b"\0" * 2
 
     def __init__(self):
         Record.__init__(self)
@@ -292,12 +299,11 @@ class _EMR_UNKNOWN(Record):
         """Set bounds of object.  Depends on naming convention always
         defining the bounding rectangle as
         rclBounds_[left|top|right|bottom]."""
-        self.rclBounds = [
-            [bounds[0][0], bounds[0][1]], [bounds[1][0], bounds[1][1]]]
+        self.rclBounds = [[bounds[0][0], bounds[0][1]], [bounds[1][0], bounds[1][1]]]
 
     def getBounds(self):
         """Return bounds of object, or None if not applicable."""
-        if 'rclBounds' in self.values:
+        if "rclBounds" in self.values:
             return self.rclBounds
         return None
 
@@ -336,13 +342,13 @@ class _EMR_UNKNOWN(Record):
             bytes = self.format.pack(self.values, self, self.hdrLen())
             # fh.write(struct.pack(self.format.fmt,*self.values))
         except struct.error:
-            print("!!!!!Struct error:", end=' ')
+            print("!!!!!Struct error:", end=" ")
             print(self)
             raise
         before = self.nSize
         self.nSize = self.hdrLen() + len(bytes) + self.sizeExtra()
         if self.verbose and before != self.nSize:
-            print("resize: before=%d after=%d" % (before, self.nSize), end=' ')
+            print("resize: before=%d after=%d" % (before, self.nSize), end=" ")
             print(self)
         self.verifySize(before, len(bytes))
         self.writeHdr(fh)
@@ -363,7 +369,7 @@ class _EMR_UNKNOWN(Record):
         before = self.nSize
         self.nSize = self.hdrLen() + self.format.calcNumBytes(self) + self.sizeExtra()
         if self.verbose and before != self.nSize:
-            print("resize: before=%d after=%d" % (before, self.nSize), end=' ')
+            print("resize: before=%d after=%d" % (before, self.nSize), end=" ")
             print(self)
         self.verifySize(before, self.format.calcNumBytes(self))
         return self.nSize
@@ -373,12 +379,14 @@ class _EMR_UNKNOWN(Record):
 
     def verifySize(self, before, calcSize):
         if self.nSize % 4 != 0:
-            print("size error--must be divisible by 4. before=%d after=%d calcNumBytes=%d extra=%d" %
-                  (before, self.nSize, calcSize, self.sizeExtra()))
+            print(
+                "size error--must be divisible by 4. before=%d after=%d calcNumBytes=%d extra=%d"
+                % (before, self.nSize, calcSize, self.sizeExtra())
+            )
             for name in self.format.names:
                 fmt = self.format.fmtmap[name]
                 size = fmt.calcNumBytes(self, name)
-                print("  name={} size={}".format(name, size))
+                print(f"  name={name} size={size}")
             print(self)
             raise TypeError
 
@@ -397,11 +405,12 @@ class _EMR_UNKNOWN(Record):
         ret = "\n" if details else ""
 
         return "**%s: iType=%s nSize=%s  struct='%s' size=%d extra=%d\n%s%s" % (
-            self.__class__.__name__.lstrip('_'),
+            self.__class__.__name__.lstrip("_"),
             self.iType,
             self.nSize,
             self.format.fmt,
             self.format.minstructsize,
             self.sizeExtra(),
             details,
-            ret)
+            ret,
+        )

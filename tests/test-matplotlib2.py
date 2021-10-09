@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-useEMF=False
+useEMF = False
 
 import sys
 
@@ -9,21 +9,21 @@ try:
 except:
     print("Requires matplotlib from http://matplotlib.sourceforge.net.")
     sys.exit()
-    
+
 if useEMF:
-    matplotlib.use('EMF')
-    ext=".emf"
+    matplotlib.use("EMF")
+    ext = ".emf"
 else:
-    matplotlib.use('Agg')
-    ext=".png"
+    matplotlib.use("Agg")
+    ext = ".png"
 
 from pylab import *
 
-semilogy([12,49,78,42,.15,24,.30,60,1],label="stuff")
-semilogy([25,62,76,66,.6,54,30,53,.098],label="$10^{-1}$")
+semilogy([12, 49, 78, 42, 0.15, 24, 0.30, 60, 1], label="stuff")
+semilogy([25, 62, 76, 66, 0.6, 54, 30, 53, 0.098], label="$10^{-1}$")
 xlabel("nm")
 ylabel("diff")
-legend(loc='best')
+legend(loc="best")
 title("Title of stuff and things. ;qjkxbwz/,.pyfgcr!@#$%^&*(")
-    
-savefig("test-matplotlib2"+ext,dpi=300)
+
+savefig("test-matplotlib2" + ext, dpi=300)

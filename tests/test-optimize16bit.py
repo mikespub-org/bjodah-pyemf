@@ -2,25 +2,24 @@
 
 # Test of bounds checking and 16bit/32bit versions of polygon, polyline, etc.
 
-from past.utils import old_div
 import pyemf
 
-width=8
-height=6
-dpi=300
+width = 8
+height = 6
+dpi = 300
 
-emf=pyemf.EMF(width,height,dpi)
-pen16=emf.CreatePen(pyemf.PS_SOLID,1,(0x01,0x02,0xff))
-pen32=emf.CreatePen(pyemf.PS_SOLID,1,(0x01,0xff,0x03))
+emf = pyemf.EMF(width, height, dpi)
+pen16 = emf.CreatePen(pyemf.PS_SOLID, 1, (0x01, 0x02, 0xFF))
+pen32 = emf.CreatePen(pyemf.PS_SOLID, 1, (0x01, 0xFF, 0x03))
 
 emf.SelectObject(pen16)
-emf.Polyline([(0,0),(width*dpi,old_div(height*dpi,2))])
+emf.Polyline([(0, 0), (width * dpi, int(height * dpi / 2))])
 emf.SelectObject(pen32)
-emf.Polyline([(0,0),(40000,old_div(height*dpi,2))])
+emf.Polyline([(0, 0), (40000, int(height * dpi / 2))])
 emf.SelectObject(pen16)
-emf.Polyline([(width*dpi,old_div(height*dpi,2)),(0,height*dpi)])
+emf.Polyline([(width * dpi, int(height * dpi / 2)), (0, height * dpi)])
 emf.SelectObject(pen32)
-emf.Polyline([(40000,old_div(height*dpi,2)),(0,height*dpi)])
+emf.Polyline([(40000, int(height * dpi / 2)), (0, height * dpi)])
 
-ret=emf.save("test-optimize16bit.emf")
+ret = emf.save("test-optimize16bit.emf")
 print("save returns %s" % str(ret))

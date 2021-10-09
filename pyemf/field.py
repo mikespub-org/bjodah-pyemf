@@ -24,18 +24,22 @@ import warnings
 
 from .compat import BytesIO, cunicode
 
+
 def struct_pack(fmt, *args):
-    """ handle conversion of float to int (py3.7 test-suite) """
+    """handle conversion of float to int (py3.7 test-suite)"""
     new_args = []
-    arg_toks = 'cbB?hHiIlLqQfdspP'
-    int_toks = 'bBhHiIlLqQP'
+    arg_toks = "cbB?hHiIlLqQfdspP"
+    int_toks = "bBhHiIlLqQP"
     i = -1
     for c in fmt:
         if c in arg_toks:
             i += 1
             arg = args[i]
             if c in int_toks:
-                if not isinstance(arg, int) and abs(int(arg) - arg)/float(arg) > 1e-14:
+                if (
+                    not isinstance(arg, int)
+                    and abs(int(arg) - arg) / float(arg) > 1e-14
+                ):
                     warnings.warn("Information lost during integer conversion")
                 new_args.append(int(arg))
             else:
@@ -44,11 +48,13 @@ def struct_pack(fmt, *args):
     assert len(args) == len(new_args)
     return struct.pack(fmt, *new_args)
 
+
 def _roundn(num, n):
     """Round to the nearest multiple of n greater than or equal to the
     given number.  EMF records are required to be aligned to n byte
     boundaries."""
     return ((num + n - 1) // n) * n
+
 
 # - Field, Record, and related classes: a way to represent data
 # more advanced than using just import struct
@@ -57,7 +63,6 @@ def _roundn(num, n):
 
 
 class Field:
-
     def __init__(self, fmt, size=1, num=1, offset=None):
         # Format string, if applicable
         self.fmt = fmt
@@ -85,8 +90,10 @@ class Field:
         if isinstance(obj.values[name], list) or isinstance(obj.values[name], tuple):
             size = self.size * len(obj.values[name])
             if self.debug:
-                print("  calcNumBytes: size=%d len(obj.values[%s])=%d total=%d" % (
-                    self.size, name, len(obj.values[name]), size))
+                print(
+                    "  calcNumBytes: size=%d len(obj.values[%s])=%d total=%d"
+                    % (self.size, name, len(obj.values[name]), size)
+                )
             # also update the linked number, if applicable
         else:
             size = self.size * self.getNum(obj)
@@ -129,8 +136,10 @@ class Field:
         elif obj:
             offset += getattr(obj, self.offset)  # find obj."offset"
         if self.debug:
-            print("getting offset for obj=%s, self.offset=%s => offset=%d" %
-                  (obj.__class__.__name__, self.offset, offset))
+            print(
+                "getting offset for obj=%s, self.offset=%s => offset=%d"
+                % (obj.__class__.__name__, self.offset, offset)
+            )
         return offset
 
     def hasOffsetReference(self):
@@ -157,30 +166,28 @@ class Field:
 
 
 class StructFormat(Field):
-
     def __init__(self, fmt):
         Field.__init__(self, fmt, struct.calcsize(fmt))
 
     def unpack(self, obj, name, data, ptr):
-        value = struct.unpack(self.fmt, data[ptr:ptr + self.size])[0]
+        value = struct.unpack(self.fmt, data[ptr : ptr + self.size])[0]
         return (value, self.size)
 
     def pack(self, obj, name, value):
         return struct_pack(self.fmt, value)
 
     def str_color(self, val):
-        return "red=0x{:02x} green=0x{:02x} blue=0x{:02x}".format((val & 0xff), ((val & 0xff00) >> 8), ((val & 0xff0000) >> 16))
+        return f"red=0x{(val & 0xff):02x} green=0x{((val & 0xff00) >> 8):02x} blue=0x{((val & 0xff0000) >> 16):02x}"
 
     def getString(self, name, val):
         if name.endswith("olor"):
             val = self.str_color(val)
         elif self.fmt.endswith("s"):
-            val = val.decode('utf-16le')
+            val = val.decode("utf-16le")
         return val
 
 
 class String(Field):
-
     def __init__(self, default=None, size=1, num=1, offset=None):
         # Note the two bytes per unicode char
         Field.__init__(self, None, size=size, num=num, offset=offset)
@@ -193,7 +200,7 @@ class String(Field):
             if self.size == 2:
                 # it's unicode, so get the number of actual bytes required
                 # to store it
-                txt = txt.encode('utf-16')
+                txt = txt.encode("utf-16")
             # EMF requires that strings be stored as multiples of 4 bytes
             return len(txt)
         else:
@@ -213,12 +220,12 @@ class String(Field):
         elif offset > 0:
             ptr = offset
         else:
-            return ('', 0)
+            return ("", 0)
 
         size = self.getNumBytes(obj)
-        txt = data[ptr:ptr + size]
+        txt = data[ptr : ptr + size]
         if self.size == 2:
-            txt = txt.decode('utf-16')  # Now is a unicode string
+            txt = txt.decode("utf-16")  # Now is a unicode string
         if self.debug:
             try:
                 print("str: '%s'" % str(txt))
@@ -229,12 +236,12 @@ class String(Field):
     def pack(self, obj, name, value):
         txt = value
         if self.size == 2:
-            txt = txt.encode('utf-16')
+            txt = txt.encode("utf-16")
         maxlen = self.getNumBytes(obj)
         if len(txt) > maxlen:
             txt = txt[0:maxlen]
         else:
-            txt += '\0' * (maxlen - len(txt))
+            txt += "\0" * (maxlen - len(txt))
         return txt
 
     def getDefault(self):
@@ -244,14 +251,13 @@ class String(Field):
     def setDefault(self, default):
         if default is None:
             if self.size == 2:
-                default = ''
+                default = ""
             else:
-                default = ''
+                default = ""
         self.default = default
 
 
 class CString(String):
-
     def __init__(self, default=None, num=1, offset=None):
         String.__init__(self, None, size=1, num=num, offset=offset)
 
@@ -259,15 +265,14 @@ class CString(String):
         (txt, size) = String.unpack(self, obj, name, data, ptr)
         i = 0
         while i < size:
-            if txt[i] == '\0':
+            if txt[i] == "\0":
                 break
             i += 1
         return (txt[0:i], i)
 
 
 class List(Field):
-
-    def __init__(self, default=None, num=1, fmt='i', offset=None):
+    def __init__(self, default=None, num=1, fmt="i", offset=None):
         Field.__init__(self, fmt, struct.calcsize(fmt), num, offset=offset)
         self.setDefault(default)
 
@@ -284,8 +289,7 @@ class List(Field):
 
         num = self.getNum(obj)
         while num > 0:
-            values.append(
-                struct.unpack(self.fmt, data[ptr:ptr + self.size])[0])
+            values.append(struct.unpack(self.fmt, data[ptr : ptr + self.size])[0])
             ptr += self.size
             num -= 1
         return (values, self.getNumBytes(obj))
@@ -307,16 +311,14 @@ class List(Field):
 
 
 class Tuples(Field):
-
-    def __init__(self, default=None, rank=2, num=1, fmt='i', offset=None):
+    def __init__(self, default=None, rank=2, num=1, fmt="i", offset=None):
         if fmt[0] in "<>@!=":
             fmt = fmt[0] + fmt[1] * rank
         else:
             fmt = fmt * rank
         Field.__init__(self, fmt, struct.calcsize(fmt), num, offset=offset)
         if self.debug:
-            print("Tuples:%s self.size=%d" %
-                  (self.__class__.__name__, self.size))
+            print("Tuples:%s self.size=%d" % (self.__class__.__name__, self.size))
         self.rank = rank
         self.setDefault(default)
 
@@ -334,11 +336,12 @@ class Tuples(Field):
 
         num = self.getNum(obj)
         if self.debug:
-            print("unpack: name=%s num=%d ptr=%d datasize=%d" %
-                  (name, num, ptr, len(data)))
+            print(
+                "unpack: name=%s num=%d ptr=%d datasize=%d"
+                % (name, num, ptr, len(data))
+            )
         while num > 0:
-            values.append(
-                list(struct.unpack(self.fmt, data[ptr:ptr + self.size])))
+            values.append(list(struct.unpack(self.fmt, data[ptr : ptr + self.size])))
             ptr += self.size
             num -= 1
         return (values, self.getNumBytes(obj))
@@ -362,18 +365,16 @@ class Tuples(Field):
             default = [[0] * self.rank] * self.getNum()
         self.default = default
 
+
 # Special case of two-tuples
 
 
 class Points(Tuples):
-
-    def __init__(self, default=None, num=1, fmt='i', offset=None):
-        Tuples.__init__(
-            self, rank=2, num=num, fmt=fmt, default=default, offset=offset)
+    def __init__(self, default=None, num=1, fmt="i", offset=None):
+        Tuples.__init__(self, rank=2, num=num, fmt=fmt, default=default, offset=offset)
 
 
 class EMFString(Field):
-
     def __init__(self, default=None, size=2, num=1, offset=None, pad=4):
         # Note the two bytes per unicode char
         Field.__init__(self, None, size=size, num=num, offset=offset)
@@ -387,7 +388,7 @@ class EMFString(Field):
             if self.size == 2:
                 # it's unicode, so get the number of actual bytes required
                 # to store it
-                txt = txt.encode('utf-16le')
+                txt = txt.encode("utf-16le")
             # EMF requires that strings be stored as multiples of 4 bytes
             extra = _roundn(len(txt), self.pad) - len(txt)
             return len(txt) + extra
@@ -408,16 +409,16 @@ class EMFString(Field):
         elif offset > 0:
             ptr = offset
         else:
-            return ('', 0)
+            return ("", 0)
 
         size = self.getNumBytes(obj)
-        txt = data[ptr:ptr + size]
+        txt = data[ptr : ptr + size]
         size = _roundn(len(txt), self.pad)
         if self.size == 2:
             try:
-                txt = txt.decode('utf-16le')  # Now is a unicode string
+                txt = txt.decode("utf-16le")  # Now is a unicode string
             except Exception as e:
-                #print(e)
+                # print(e)
                 pass
         if self.debug:
             try:
@@ -429,18 +430,18 @@ class EMFString(Field):
     def pack(self, obj, name, value):
         txt = value
         if isinstance(txt, cunicode):
-            txt = txt.encode('utf-16le')
+            txt = txt.encode("utf-16le")
         if self.hasNumReference():
             # must be multiple of pad (4)
             extra = _roundn(len(txt), self.pad) - len(txt)
             if extra > 0:
-                txt += b'\0' * extra
+                txt += b"\0" * extra
         else:
             maxlen = self.getNumBytes(obj)
             if len(txt) > maxlen:
                 txt = txt[0:maxlen]
             else:
-                txt += b'\0' * (maxlen - len(txt))
+                txt += b"\0" * (maxlen - len(txt))
         return txt
 
     def getDefault(self):
@@ -450,7 +451,7 @@ class EMFString(Field):
     def setDefault(self, default):
         if default is None:
             if self.size == 2:
-                default = ''
+                default = ""
             else:
-                default = ''
+                default = ""
         self.default = default

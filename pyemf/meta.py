@@ -12,7 +12,7 @@ def register(klass):
 
 
 class META_UNKNOWN(_EMR_UNKNOWN):
-    emr_id = 0x7fff
+    emr_id = 0x7FFF
 
     def __init__(self):
         _EMR_UNKNOWN.__init__(self)
@@ -32,7 +32,7 @@ class META_UNKNOWN(_EMR_UNKNOWN):
 
 
 class META_COLOR(META_UNKNOWN):
-    typedef = [('I', 'crColor', 0)]
+    typedef = [("I", "crColor", 0)]
 
     def __init__(self, color=0):
         META_UNKNOWN.__init__(self)
@@ -49,7 +49,7 @@ class META_HAS_HANDLE(META_UNKNOWN):
 
 
 class META_HANDLE(META_UNKNOWN):
-    typedef = [('H', 'handle')]
+    typedef = [("H", "handle")]
 
     def __init__(self, dc=None, handle=0):
         META_UNKNOWN.__init__(self)
@@ -57,10 +57,7 @@ class META_HANDLE(META_UNKNOWN):
 
 
 class META_SETMODE(META_UNKNOWN):
-    typedef = [
-        ('H', 'iMode', 0),
-        ('H', 'iReserved', 0)
-    ]
+    typedef = [("H", "iMode", 0), ("H", "iReserved", 0)]
 
     def __init__(self, mode, first, last):
         META_UNKNOWN.__init__(self)
@@ -83,15 +80,15 @@ class META_CREATEOBJECT(META_HAS_HANDLE):
 
 class META_PLACEABLE(META_UNKNOWN):
     """The META_PLACEABLE record is the first record in a placeable
-     WMF metafile, which is an extension to the WMF metafile format."""
+    WMF metafile, which is an extension to the WMF metafile format."""
 
     typedef = [
-        ('I', 'nKey', 0x9ac6cdd7),
-        ('H', 'hWmf', 0x0000),
-        (Points(num=2, fmt='H'), 'rclBounds'),
-        ('H', 'sInch', 0),
-        ('I', 'nReserved', 0),
-        ('H', 'sChecksum', 0),
+        ("I", "nKey", 0x9AC6CDD7),
+        ("H", "hWmf", 0x0000),
+        (Points(num=2, fmt="H"), "rclBounds"),
+        ("H", "sInch", 0),
+        ("I", "nReserved", 0),
+        ("H", "sChecksum", 0),
     ]
 
     def __init__(self):
@@ -101,10 +98,14 @@ class META_PLACEABLE(META_UNKNOWN):
         self.szlMillimeters = [0, 0]
 
     def setBounds(self, dc, scaleheader=False):
-        self.rclBounds = [[dc.bounds_left, dc.bounds_top],
-                          [dc.bounds_right, dc.bounds_bottom]]
-        self.rclFrame = [[dc.frame_left, dc.frame_top],
-                         [dc.frame_right, dc.frame_bottom]]
+        self.rclBounds = [
+            [dc.bounds_left, dc.bounds_top],
+            [dc.bounds_right, dc.bounds_bottom],
+        ]
+        self.rclFrame = [
+            [dc.frame_left, dc.frame_top],
+            [dc.frame_right, dc.frame_bottom],
+        ]
 
         print(self)
 
@@ -117,17 +118,17 @@ class META_PLACEABLE(META_UNKNOWN):
 
 class META_HEADER(META_UNKNOWN):
     """The META_HEADER record is the first record in a standard (nonplaceable)
-     WMF metafile. """
+    WMF metafile."""
 
     typedef = [
-        ('H', 'sType', 0),
-        ('H', 'sHeaderSize', 9),
-        ('H', 'sVersion', 0),
-        ('H', 'sSizeLow', 0),
-        ('H', 'sSizeHigh', 0),
-        ('H', 'sNumberOfObjects', 0),
-        ('I', 'nMaxRecord', 0),
-        ('H', 'sNumberOfMembers', 0),
+        ("H", "sType", 0),
+        ("H", "sHeaderSize", 9),
+        ("H", "sVersion", 0),
+        ("H", "sSizeLow", 0),
+        ("H", "sSizeHigh", 0),
+        ("H", "sNumberOfObjects", 0),
+        ("I", "nMaxRecord", 0),
+        ("H", "sNumberOfMembers", 0),
     ]
 
     def __init__(self):
@@ -173,7 +174,7 @@ class META_SETBKMODE(META_SETMODE):
 
 @register
 class META_SETMAPMODE(META_SETMODE):
-    typedef = [('H', 'iMapMode', 0)]
+    typedef = [("H", "iMapMode", 0)]
 
     emr_id = 0x0103
 
@@ -284,8 +285,8 @@ class META_POLYLINE(META_UNKNOWN):
     emr_id = 0x0325
 
     typedef = [
-        ('h', 'sNumberOfPoints', 0),
-        (Points(num='sNumberOfPoints', fmt='h'), 'aPoints'),
+        ("h", "sNumberOfPoints", 0),
+        (Points(num="sNumberOfPoints", fmt="h"), "aPoints"),
     ]
 
 
@@ -299,8 +300,8 @@ class META_SETWINDOWORG(META_UNKNOWN):
     emr_id = 0x020B
 
     typedef = [
-        ('H', 'ptlOrigin_y'),
-        ('H', 'ptlOrigin_x'),
+        ("H", "ptlOrigin_y"),
+        ("H", "ptlOrigin_x"),
     ]
 
     def __init__(self, x=0, y=0):
@@ -314,8 +315,8 @@ class META_SETWINDOWEXT(META_UNKNOWN):
     emr_id = 0x020C
 
     typedef = [
-        ('H', 'szlExtent_cy'),
-        ('H', 'szlExtent_cx'),
+        ("H", "szlExtent_cy"),
+        ("H", "szlExtent_cx"),
     ]
 
     def __init__(self, cx=0, cy=0):
@@ -476,20 +477,20 @@ class META_BITBLT(META_UNKNOWN):
 
 @register
 class META_EXTTEXTOUT(META_UNKNOWN):
-    emr_id = 0x0a32
+    emr_id = 0x0A32
     typedef = [
-        ('h', 'ptlReference_y', 0),
-        ('h', 'ptlReference_x', 0),
-        ('h', 'nChars', 0),
-        ('H', 'fwOpts', 0),
+        ("h", "ptlReference_y", 0),
+        ("h", "ptlReference_x", 0),
+        ("h", "nChars", 0),
+        ("H", "fwOpts", 0),
     ]
 
     # type descriptors of variable fields
-    _rclBounds = Points(num=2, fmt='h')
-    _string = EMFString(num='nChars', size=1, pad=2)
-    _dx = List(num='nChars', fmt='h')
+    _rclBounds = Points(num=2, fmt="h")
+    _string = EMFString(num="nChars", size=1, pad=2)
+    _dx = List(num="nChars", fmt="h")
 
-    def __init__(self, x=0, y=0, txt=''):
+    def __init__(self, x=0, y=0, txt=""):
         META_UNKNOWN.__init__(self)
         self.ptlReference_x = x
         self.ptlReference_y = y
@@ -507,16 +508,16 @@ class META_EXTTEXTOUT(META_UNKNOWN):
         fh = BytesIO()
         if self.fwOpts & (ETO_OPAQUE | ETO_CLIPPED):
             fmt = self.__class__._rclBounds
-            self._write(fh, fmt, 'rclBounds', self.rclBounds)
+            self._write(fh, fmt, "rclBounds", self.rclBounds)
         if self.nChars > 0:
             fmt = self.__class__._string
-            self._write(fh, fmt, 'string', self.string)
+            self._write(fh, fmt, "string", self.string)
         if self.fwOpts & (ETO_GLYPH_INDEX | ETO_PDY):
             fmt = self.__class__._dx
             old_nChars = self.nChars
             try:
                 self.nChars = len(self.dx)
-                self._write(fh, fmt, 'dx', self.dx)
+                self._write(fh, fmt, "dx", self.dx)
             finally:
                 self.nChars = old_nChars
         self.unhandleddata = fh.getvalue()
@@ -528,13 +529,13 @@ class META_EXTTEXTOUT(META_UNKNOWN):
         if self.fwOpts & (ETO_OPAQUE | ETO_CLIPPED):
             fmt = self.__class__._rclBounds
             obj = self
-            name = 'rclBounds'
+            name = "rclBounds"
             (value, size) = fmt.unpack(obj, name, data, ptr)
             self.rclBounds = value
             ptr += size
         if self.nChars > 0:
             fmt = self.__class__._string
-            (value, size) = fmt.unpack(self, 'string', data, ptr)
+            (value, size) = fmt.unpack(self, "string", data, ptr)
             self.string = value
             ptr += size
         if self.fwOpts & (ETO_GLYPH_INDEX | ETO_PDY):
@@ -543,7 +544,7 @@ class META_EXTTEXTOUT(META_UNKNOWN):
             old_nChars = self.nChars
             try:
                 self.nChars = (len(data) - ptr) // 2
-                (value, size) = fmt.unpack(self, 'dx', data, ptr)
+                (value, size) = fmt.unpack(self, "dx", data, ptr)
             finally:
                 self.nChars = old_nChars
             self.dx = value
@@ -552,7 +553,7 @@ class META_EXTTEXTOUT(META_UNKNOWN):
 
 @register
 class META_SETDIBTODEV(META_UNKNOWN):
-    emr_id = 0x0d33
+    emr_id = 0x0D33
 
 
 @register
@@ -562,24 +563,24 @@ class META_DIBBITBLT(META_UNKNOWN):
 
 @register
 class META_DIBSTRETCHBLT(META_UNKNOWN):
-    emr_id = 0x0b41
+    emr_id = 0x0B41
 
 
 @register
 class META_STRETCHDIB(META_UNKNOWN):
-    emr_id = 0x0f43
+    emr_id = 0x0F43
 
     typedef = [
-        ('I', 'dwRop'),
-        ('H', 'iUsageSrc'),
-        ('H', 'cySrc'),
-        ('H', 'cxSrc'),
-        ('H', 'ySrc'),
-        ('H', 'xSrc'),
-        ('H', 'cyDest'),
-        ('H', 'cxDest'),
-        ('H', 'yDest'),
-        ('H', 'xDest'),
+        ("I", "dwRop"),
+        ("H", "iUsageSrc"),
+        ("H", "cySrc"),
+        ("H", "cxSrc"),
+        ("H", "ySrc"),
+        ("H", "xSrc"),
+        ("H", "cyDest"),
+        ("H", "cxDest"),
+        ("H", "yDest"),
+        ("H", "xDest"),
     ]
 
     def __init__(self):
@@ -591,17 +592,17 @@ class META_STRETCHDIB(META_UNKNOWN):
 
     def write_bitmap(self, file_name, data):
         bmp_header_len = 14
-        dib_header_len = struct.unpack('<I', data[:4])
+        dib_header_len = struct.unpack("<I", data[:4])
         with open(file_name, "wb") as f:
-            f.write('BM' + struct.pack('<I', bmp_header_len + len(data)))
-            f.write('\0\0\0\0')
-            f.write(struct.pack('<I', bmp_header_len + dib_header_len[0]))
+            f.write("BM" + struct.pack("<I", bmp_header_len + len(data)))
+            f.write("\0\0\0\0")
+            f.write(struct.pack("<I", bmp_header_len + dib_header_len[0]))
             f.write(data)
 
 
 @register
 class META_DELETEOBJECT(META_HANDLE):
-    emr_id = 0x01f0
+    emr_id = 0x01F0
 
     def isDeleteObject(self):
         return True
@@ -609,7 +610,7 @@ class META_DELETEOBJECT(META_HANDLE):
 
 @register
 class META_CREATEPALETTE(META_CREATEOBJECT):
-    emr_id = 0x00f7
+    emr_id = 0x00F7
 
 
 @register
@@ -622,9 +623,9 @@ class META_CREATEPENINDIRECT(META_CREATEOBJECT):
     emr_id = 0x02FA
 
     typedef = [
-        ('H', 'lopn_style'),
-        (Points(num=1, fmt='H'), 'lopn_width'),
-        ('I', 'lopn_color'),
+        ("H", "lopn_style"),
+        (Points(num=1, fmt="H"), "lopn_width"),
+        ("I", "lopn_color"),
     ]
 
     def __init__(self, style=PS_SOLID, width=1, color=0):
@@ -638,28 +639,39 @@ class META_CREATEPENINDIRECT(META_CREATEOBJECT):
 class META_CREATEFONTINDIRECT(META_CREATEOBJECT):
     emr_id = 0x02FB
     typedef = [
-        ('h', 'lfHeight'),
-        ('h', 'lfWidth'),
-        ('h', 'lfEscapement'),
-        ('h', 'lfOrientation'),
-        ('h', 'lfWeight'),
-        ('B', 'lfItalic'),
-        ('B', 'lfUnderline'),
-        ('B', 'lfStrikeOut'),
-        ('B', 'lfCharSet'),
-        ('B', 'lfOutPrecision'),
-        ('B', 'lfClipPrecision'),
-        ('B', 'lfQuality'),
-        ('B', 'lfPitchAndFamily'),
-        (CString(num=32), 'lfFaceName')
+        ("h", "lfHeight"),
+        ("h", "lfWidth"),
+        ("h", "lfEscapement"),
+        ("h", "lfOrientation"),
+        ("h", "lfWeight"),
+        ("B", "lfItalic"),
+        ("B", "lfUnderline"),
+        ("B", "lfStrikeOut"),
+        ("B", "lfCharSet"),
+        ("B", "lfOutPrecision"),
+        ("B", "lfClipPrecision"),
+        ("B", "lfQuality"),
+        ("B", "lfPitchAndFamily"),
+        (CString(num=32), "lfFaceName"),
     ]
 
-    def __init__(self, height=0, width=0, escapement=0, orientation=0,
-                 weight=FW_NORMAL, italic=0, underline=0, strike_out=0,
-                 charset=ANSI_CHARSET, out_precision=OUT_DEFAULT_PRECIS,
-                 clip_precision=CLIP_DEFAULT_PRECIS,
-                 quality=DEFAULT_QUALITY,
-                 pitch_family=DEFAULT_PITCH | FF_DONTCARE, name='Times New Roman'):
+    def __init__(
+        self,
+        height=0,
+        width=0,
+        escapement=0,
+        orientation=0,
+        weight=FW_NORMAL,
+        italic=0,
+        underline=0,
+        strike_out=0,
+        charset=ANSI_CHARSET,
+        out_precision=OUT_DEFAULT_PRECIS,
+        clip_precision=CLIP_DEFAULT_PRECIS,
+        quality=DEFAULT_QUALITY,
+        pitch_family=DEFAULT_PITCH | FF_DONTCARE,
+        name="Times New Roman",
+    ):
         META_CREATEOBJECT.__init__(self)
         self.lfHeight = height
         self.lfWidth = width
@@ -676,11 +688,11 @@ class META_CREATEFONTINDIRECT(META_CREATEOBJECT):
         self.lfPitchAndFamily = pitch_family
 
         # truncate or pad to exactly 32 characters
-        name = name.split('\0')[0]
+        name = name.split("\0")[0]
         nameLen = len(name)
         if nameLen > 31:
             name = name[0:31]
-        name += '\0' * (32 - nameLen)
+        name += "\0" * (32 - nameLen)
         self.lfFaceName = name
         # print("lfFaceName=%r" % self.lfFaceName)
 
@@ -693,9 +705,9 @@ class META_CREATEBRUSHINDIRECT(META_CREATEOBJECT):
     emr_id = 0x02FC
 
     typedef = [
-        ('H', 'lbStyle'),
-        ('I', 'lbColor'),
-        ('H', 'lbHatch'),
+        ("H", "lbStyle"),
+        ("I", "lbColor"),
+        ("H", "lbHatch"),
     ]
 
 

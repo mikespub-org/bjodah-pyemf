@@ -48,7 +48,7 @@ class _DC:
 
     """
 
-    def __init__(self, width='6.0', height='4.0', density='72', units='in'):
+    def __init__(self, width="6.0", height="4.0", density="72", units="in"):
         self.x = 0
         self.y = 0
 
@@ -72,18 +72,15 @@ class _DC:
         # physical dimensions are in .01 mm units
         self.width = 0
         self.height = 0
-        if units == 'mm':
-            self.setPhysicalSize(
-                [[0, 0], [int(width * 100), int(height * 100)]])
+        if units == "mm":
+            self.setPhysicalSize([[0, 0], [int(width * 100), int(height * 100)]])
         else:
-            self.setPhysicalSize(
-                [[0, 0], [int(width * 2540), int(height * 2540)]])
+            self.setPhysicalSize([[0, 0], [int(width * 2540), int(height * 2540)]])
 
         # addressable pixel sizes
         self.pixelwidth = 0
         self.pixelheight = 0
-        self.setPixelSize(
-            [[0, 0], [int(width * density), int(height * density)]])
+        self.setPixelSize([[0, 0], [int(width * density), int(height * density)]])
 
         # self.text_alignment = TA_BASELINE;
         self.text_color = RGB(0, 0, 0)

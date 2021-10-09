@@ -28,48 +28,53 @@ from . import meta
 class WMF:
 
     """
-Reference page of the public API for WMF metafile creation.  See
-L{pyemf} for an overview / mini tutorial.
+    Reference page of the public API for WMF metafile creation.  See
+    L{pyemf} for an overview / mini tutorial.
 
-@group Creating Metafiles: __init__, load, save
-@group Drawing Parameters: GetStockObject, SelectObject, DeleteObject, CreatePen, CreateSolidBrush, CreateHatchBrush, SetBkColor, SetBkMode, SetPolyFillMode
-@group Drawing Primitives: SetPixel, Polyline, PolyPolyline, Polygon, PolyPolygon, Rectangle, RoundRect, Ellipse, Arc, Chord, Pie, PolyBezier
-@group Path Primatives: BeginPath, EndPath, MoveTo, LineTo, PolylineTo, ArcTo,
- PolyBezierTo, CloseFigure, FillPath, StrokePath, StrokeAndFillPath
-@group Clipping: SelectClipPath
-@group Text: CreateFont, SetTextAlign, SetTextColor, TextOut
-@group Coordinate System Transformation: SaveDC, RestoreDC, SetWorldTransform, ModifyWorldTransform
-@group **Experimental** -- Viewport Manipulation: SetMapMode, SetViewportOrgEx, GetViewportOrgEx, SetWindowOrgEx, GetWindowOrgEx, SetViewportExtEx, ScaleViewportExtEx, GetViewportExtEx, SetWindowExtEx, ScaleWindowExtEx, GetWindowExtEx
+    @group Creating Metafiles: __init__, load, save
+    @group Drawing Parameters: GetStockObject, SelectObject, DeleteObject, CreatePen, CreateSolidBrush, CreateHatchBrush, SetBkColor, SetBkMode, SetPolyFillMode
+    @group Drawing Primitives: SetPixel, Polyline, PolyPolyline, Polygon, PolyPolygon, Rectangle, RoundRect, Ellipse, Arc, Chord, Pie, PolyBezier
+    @group Path Primatives: BeginPath, EndPath, MoveTo, LineTo, PolylineTo, ArcTo,
+     PolyBezierTo, CloseFigure, FillPath, StrokePath, StrokeAndFillPath
+    @group Clipping: SelectClipPath
+    @group Text: CreateFont, SetTextAlign, SetTextColor, TextOut
+    @group Coordinate System Transformation: SaveDC, RestoreDC, SetWorldTransform, ModifyWorldTransform
+    @group **Experimental** -- Viewport Manipulation: SetMapMode, SetViewportOrgEx, GetViewportOrgEx, SetWindowOrgEx, GetWindowOrgEx, SetViewportExtEx, ScaleViewportExtEx, GetViewportExtEx, SetWindowExtEx, ScaleWindowExtEx, GetWindowExtEx
+    """
 
-"""
-
-    def __init__(self, width=6.0, height=4.0, density=300, units="in",
-                 description="pyemf.sf.net", verbose=False):
+    def __init__(
+        self,
+        width=6.0,
+        height=4.0,
+        density=300,
+        units="in",
+        description="pyemf.sf.net",
+        verbose=False,
+    ):
         """
-Create an EMF structure in memory.  The size of the resulting image is
-specified in either inches or millimeters depending on the value of
-L{units}.  Width and height are floating point values, but density
-must be an integer because this becomes the basis for the coordinate
-system in the image.  Density is the number of individually
-addressible pixels per unit measurement (dots per inch or dots per
-millimeter, depending on the units system) in the image.  A
-consequence of this is that each pixel is specified by a pair of
-integer coordinates.
+        Create an EMF structure in memory.  The size of the resulting image is
+        specified in either inches or millimeters depending on the value of
+        L{units}.  Width and height are floating point values, but density
+        must be an integer because this becomes the basis for the coordinate
+        system in the image.  Density is the number of individually
+        addressible pixels per unit measurement (dots per inch or dots per
+        millimeter, depending on the units system) in the image.  A
+        consequence of this is that each pixel is specified by a pair of
+        integer coordinates.
 
-@param width: width of EMF image in inches or millimeters
-@param height: height of EMF image in inches or millimeters
-@param density: dots (pixels) per unit measurement
-@param units: string indicating the unit measurement, one of:
- - 'in'
- - 'mm'
-@type width: float
-@type height: float
-@type density: int
-@type units: string
-@param description: optional string to specify a description of the image
-@type description: string
-
-"""
+        @param width: width of EMF image in inches or millimeters
+        @param height: height of EMF image in inches or millimeters
+        @param density: dots (pixels) per unit measurement
+        @param units: string indicating the unit measurement, one of:
+         - 'in'
+         - 'mm'
+        @type width: float
+        @type height: float
+        @type density: int
+        @type units: string
+        @param description: optional string to specify a description of the image
+        @type description: string
+        """
         self.filename = None
         self.dc = _DC(width, height, density, units)
         self.records = []
@@ -90,33 +95,33 @@ integer coordinates.
 
     def loadmem(self, membuf=None):
         """
-Read an existing buffer from a string of bytes.  If any records exist
-in the current object, they will be overwritten by the records from
-this buffer.
+        Read an existing buffer from a string of bytes.  If any records exist
+        in the current object, they will be overwritten by the records from
+        this buffer.
 
-@param membuf: buffer to load
-@type membuf: string
-@returns: True for success, False for failure.
-@rtype: Boolean
+        @param membuf: buffer to load
+        @type membuf: string
+        @returns: True for success, False for failure.
+        @rtype: Boolean
         """
         fh = BytesIO(membuf)
         self._load(fh)
 
     def load(self, filename=None):
         """
-Read an existing EMF file.  If any records exist in the current
-object, they will be overwritten by the records from this file.
+        Read an existing EMF file.  If any records exist in the current
+        object, they will be overwritten by the records from this file.
 
-@param filename: filename to load
-@type filename: string
-@returns: True for success, False for failure.
-@rtype: Boolean
+        @param filename: filename to load
+        @type filename: string
+        @returns: True for success, False for failure.
+        @rtype: Boolean
         """
         if filename:
             self.filename = filename
 
         if self.filename:
-            fh = open(self.filename, 'rb')
+            fh = open(self.filename, "rb")
             self._load(fh)
 
     def _load(self, fh):
@@ -175,7 +180,7 @@ object, they will be overwritten by the records from this file.
                         self.dc.addObject(e, e.handle)
 
                     if self.verbose:
-                        print("Unserializing: ", end=' ')
+                        print("Unserializing: ", end=" ")
                         print(e)
                 elif count > 0 and self.verbose:
                     print("Discarded trailing bytes: %r" % data)
@@ -188,7 +193,7 @@ object, they will be overwritten by the records from this file.
         been flagged as having an error."""
         if not e.error:
             if self.verbose:
-                print("Appending: ", end=' ')
+                print("Appending: ", end=" ")
                 print(e)
             self.records.append(e)
             return 1
@@ -196,10 +201,10 @@ object, they will be overwritten by the records from this file.
 
     def _end(self):
         """
-Append an EOF record and compute header information.  The header needs
-to know the number of records, number of handles, bounds, and size of
-the entire metafile before it can be written out, so we have to march
-through all the records and gather info.
+        Append an EOF record and compute header information.  The header needs
+        to know the number of records, number of handles, bounds, and size of
+        the entire metafile before it can be written out, so we have to march
+        through all the records and gather info.
         """
 
         end = self.records[-1]
@@ -224,12 +229,12 @@ through all the records and gather info.
 
     def save(self, filename=None):
         """
-Write the EMF to disk.
+        Write the EMF to disk.
 
-@param filename: filename to write
-@type filename: string
-@returns: True for success, False for failure.
-@rtype: Boolean
+        @param filename: filename to write
+        @type filename: string
+        @returns: True for success, False for failure.
+        @rtype: Boolean
         """
 
         self._end()
@@ -321,8 +326,10 @@ Write the EMF to disk.
                 # print "bounds=%s" % str(objbounds)
                 # have to copy the object manually because we don't
                 # want to overwrite the object's bounds
-                bounds = [[objbounds[0][0], objbounds[0][1]],
-                          [objbounds[1][0], objbounds[1][1]]]
+                bounds = [
+                    [objbounds[0][0], objbounds[0][1]],
+                    [objbounds[1][0], objbounds[1][1]],
+                ]
                 break
 
         # if there are more records with bounds, merge them
@@ -342,7 +349,12 @@ Write the EMF to disk.
 
         SHRT_MIN = -32768
         SHRT_MAX = 32767
-        if bounds[0][0] >= SHRT_MIN and bounds[0][1] >= SHRT_MIN and bounds[1][0] <= SHRT_MAX and bounds[1][1] <= SHRT_MAX:
+        if (
+            bounds[0][0] >= SHRT_MIN
+            and bounds[0][1] >= SHRT_MIN
+            and bounds[1][0] <= SHRT_MAX
+            and bounds[1][1] <= SHRT_MAX
+        ):
             return True
         return False
 
@@ -391,155 +403,178 @@ Write the EMF to disk.
 
     def SelectObject(self, handle):
         """
-Make the given graphics object current.
+        Make the given graphics object current.
 
-@param handle: handle of graphics object to make current.
+        @param handle: handle of graphics object to make current.
 
-@return:
-    the handle of the current graphics object which obj replaces.
+        @return:
+            the handle of the current graphics object which obj replaces.
 
-@rtype: int
-@type handle: int
+        @rtype: int
+        @type handle: int
         """
         return self._append(meta.META_SELECTOBJECT(self.dc, handle))
 
-    def CreateFont(self, height, width=0, escapement=0, orientation=0, weight=FW_NORMAL, italic=0, underline=0, strike_out=0, charset=ANSI_CHARSET, out_precision=OUT_DEFAULT_PRECIS, clip_precision=CLIP_DEFAULT_PRECIS, quality=DEFAULT_QUALITY, pitch_family=DEFAULT_PITCH | FF_DONTCARE, name='Times New Roman'):
+    def CreateFont(
+        self,
+        height,
+        width=0,
+        escapement=0,
+        orientation=0,
+        weight=FW_NORMAL,
+        italic=0,
+        underline=0,
+        strike_out=0,
+        charset=ANSI_CHARSET,
+        out_precision=OUT_DEFAULT_PRECIS,
+        clip_precision=CLIP_DEFAULT_PRECIS,
+        quality=DEFAULT_QUALITY,
+        pitch_family=DEFAULT_PITCH | FF_DONTCARE,
+        name="Times New Roman",
+    ):
         """
 
-Create a new font object. Presumably, when rendering the EMF the
-system tries to find a reasonable approximation to all the requested
-attributes.
+        Create a new font object. Presumably, when rendering the EMF the
+        system tries to find a reasonable approximation to all the requested
+        attributes.
 
-@param height: specified one of two ways:
- - if height>0: locate the font using the specified height as the typical cell height
- - if height<0: use the absolute value of the height as the typical glyph height.
-@param width: typical glyph width.  If zero, the typical aspect ratio of the font is used.
-@param escapement: angle, in degrees*10, of rendered string rotation.  Note that escapement and orientation must be the same.
-@param orientation: angle, in degrees*10, of rendered string rotation.  Note that escapement and orientation must be the same.
-@param weight: weight has (at least) the following values:
- - FW_DONTCARE
- - FW_THIN
- - FW_EXTRALIGHT
- - FW_ULTRALIGHT
- - FW_LIGHT
- - FW_NORMAL
- - FW_REGULAR
- - FW_MEDIUM
- - FW_SEMIBOLD
- - FW_DEMIBOLD
- - FW_BOLD
- - FW_EXTRABOLD
- - FW_ULTRABOLD
- - FW_HEAVY
- - FW_BLACK
-@param italic: non-zero means try to find an italic version of the face.
-@param underline: non-zero means to underline the glyphs.
-@param strike_out: non-zero means to strike-out the glyphs.
-@param charset: select the character set from the following list:
- - ANSI_CHARSET
- - DEFAULT_CHARSET
- - SYMBOL_CHARSET
- - SHIFTJIS_CHARSET
- - HANGEUL_CHARSET
- - HANGUL_CHARSET
- - GB2312_CHARSET
- - CHINESEBIG5_CHARSET
- - GREEK_CHARSET
- - TURKISH_CHARSET
- - HEBREW_CHARSET
- - ARABIC_CHARSET
- - BALTIC_CHARSET
- - RUSSIAN_CHARSET
- - EE_CHARSET
- - EASTEUROPE_CHARSET
- - THAI_CHARSET
- - JOHAB_CHARSET
- - MAC_CHARSET
- - OEM_CHARSET
-@param out_precision: the precision of the face may have on of the
-following values:
- - OUT_DEFAULT_PRECIS
- - OUT_STRING_PRECIS
- - OUT_CHARACTER_PRECIS
- - OUT_STROKE_PRECIS
- - OUT_TT_PRECIS
- - OUT_DEVICE_PRECIS
- - OUT_RASTER_PRECIS
- - OUT_TT_ONLY_PRECIS
- - OUT_OUTLINE_PRECIS
-@param clip_precision: the precision of glyph clipping may have one of the
-following values:
- - CLIP_DEFAULT_PRECIS
- - CLIP_CHARACTER_PRECIS
- - CLIP_STROKE_PRECIS
- - CLIP_MASK
- - CLIP_LH_ANGLES
- - CLIP_TT_ALWAYS
- - CLIP_EMBEDDED
-@param quality: (subjective) quality of the font. Choose from the following
-values:
- - DEFAULT_QUALITY
- - DRAFT_QUALITY
- - PROOF_QUALITY
- - NONANTIALIASED_QUALITY
- - ANTIALIASED_QUALITY
-@param pitch_family: the pitch and family of the font face if the named font can't be found. Combine the pitch and style using a binary or.
- - Pitch:
-   - DEFAULT_PITCH
-   - FIXED_PITCH
-   - VARIABLE_PITCH
-   - MONO_FONT
- - Style:
-   - FF_DONTCARE
-   - FF_ROMAN
-   - FF_SWISS
-   - FF_MODERN
-   - FF_SCRIPT
-   - FF_DECORATIVE
-@param name: ASCII string containing the name of the font face.
-@return: handle of font.
-@rtype: int
-@type height: int
-@type width: int
-@type escapement: int
-@type orientation: int
-@type weight: int
-@type italic: int
-@type underline: int
-@type strike_out: int
-@type charset: int
-@type out_precision: int
-@type clip_precision: int
-@type quality: int
-@type pitch_family: int
-@type name: string
+        @param height: specified one of two ways:
+         - if height>0: locate the font using the specified height as the typical cell height
+         - if height<0: use the absolute value of the height as the typical glyph height.
+        @param width: typical glyph width.  If zero, the typical aspect ratio of the font is used.
+        @param escapement: angle, in degrees*10, of rendered string rotation.  Note that escapement and orientation must be the same.
+        @param orientation: angle, in degrees*10, of rendered string rotation.  Note that escapement and orientation must be the same.
+        @param weight: weight has (at least) the following values:
+         - FW_DONTCARE
+         - FW_THIN
+         - FW_EXTRALIGHT
+         - FW_ULTRALIGHT
+         - FW_LIGHT
+         - FW_NORMAL
+         - FW_REGULAR
+         - FW_MEDIUM
+         - FW_SEMIBOLD
+         - FW_DEMIBOLD
+         - FW_BOLD
+         - FW_EXTRABOLD
+         - FW_ULTRABOLD
+         - FW_HEAVY
+         - FW_BLACK
+        @param italic: non-zero means try to find an italic version of the face.
+        @param underline: non-zero means to underline the glyphs.
+        @param strike_out: non-zero means to strike-out the glyphs.
+        @param charset: select the character set from the following list:
+         - ANSI_CHARSET
+         - DEFAULT_CHARSET
+         - SYMBOL_CHARSET
+         - SHIFTJIS_CHARSET
+         - HANGEUL_CHARSET
+         - HANGUL_CHARSET
+         - GB2312_CHARSET
+         - CHINESEBIG5_CHARSET
+         - GREEK_CHARSET
+         - TURKISH_CHARSET
+         - HEBREW_CHARSET
+         - ARABIC_CHARSET
+         - BALTIC_CHARSET
+         - RUSSIAN_CHARSET
+         - EE_CHARSET
+         - EASTEUROPE_CHARSET
+         - THAI_CHARSET
+         - JOHAB_CHARSET
+         - MAC_CHARSET
+         - OEM_CHARSET
+        @param out_precision: the precision of the face may have on of the
+        following values:
+         - OUT_DEFAULT_PRECIS
+         - OUT_STRING_PRECIS
+         - OUT_CHARACTER_PRECIS
+         - OUT_STROKE_PRECIS
+         - OUT_TT_PRECIS
+         - OUT_DEVICE_PRECIS
+         - OUT_RASTER_PRECIS
+         - OUT_TT_ONLY_PRECIS
+         - OUT_OUTLINE_PRECIS
+        @param clip_precision: the precision of glyph clipping may have one of the
+        following values:
+         - CLIP_DEFAULT_PRECIS
+         - CLIP_CHARACTER_PRECIS
+         - CLIP_STROKE_PRECIS
+         - CLIP_MASK
+         - CLIP_LH_ANGLES
+         - CLIP_TT_ALWAYS
+         - CLIP_EMBEDDED
+        @param quality: (subjective) quality of the font. Choose from the following
+        values:
+         - DEFAULT_QUALITY
+         - DRAFT_QUALITY
+         - PROOF_QUALITY
+         - NONANTIALIASED_QUALITY
+         - ANTIALIASED_QUALITY
+        @param pitch_family: the pitch and family of the font face if the named font can't be found. Combine the pitch and style using a binary or.
+         - Pitch:
+           - DEFAULT_PITCH
+           - FIXED_PITCH
+           - VARIABLE_PITCH
+           - MONO_FONT
+         - Style:
+           - FF_DONTCARE
+           - FF_ROMAN
+           - FF_SWISS
+           - FF_MODERN
+           - FF_SCRIPT
+           - FF_DECORATIVE
+        @param name: ASCII string containing the name of the font face.
+        @return: handle of font.
+        @rtype: int
+        @type height: int
+        @type width: int
+        @type escapement: int
+        @type orientation: int
+        @type weight: int
+        @type italic: int
+        @type underline: int
+        @type strike_out: int
+        @type charset: int
+        @type out_precision: int
+        @type clip_precision: int
+        @type quality: int
+        @type pitch_family: int
+        @type name: string
 
         """
-        e = meta.META_CREATEFONTINDIRECT(height, width,
-                                         escapement,
-                                         orientation, weight,
-                                         italic, underline,
-                                         strike_out, charset,
-                                         out_precision,
-                                         clip_precision,
-                                         quality, pitch_family,
-                                         name)
+        e = meta.META_CREATEFONTINDIRECT(
+            height,
+            width,
+            escapement,
+            orientation,
+            weight,
+            italic,
+            underline,
+            strike_out,
+            charset,
+            out_precision,
+            clip_precision,
+            quality,
+            pitch_family,
+            name,
+        )
         return self._appendHandle(e)
 
     def TextOut(self, x, y, text):
         """
 
-Draw a string of text at the given position using the current FONT and
-other text attributes.
-@param x: x position of text.
-@param y: y position of text.
-@param text: ASCII text string to render.
-@return: true of string successfully drawn.
+        Draw a string of text at the given position using the current FONT and
+        other text attributes.
+        @param x: x position of text.
+        @param y: y position of text.
+        @param text: ASCII text string to render.
+        @return: true of string successfully drawn.
 
-@rtype: int
-@type x: int
-@type y: int
-@type text: string
+        @rtype: int
+        @type x: int
+        @type y: int
+        @type text: string
 
         """
         e = meta.META_EXTTEXTOUT(x, y, text)

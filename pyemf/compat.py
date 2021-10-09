@@ -25,8 +25,10 @@ import sys
 is_py3 = sys.version_info[0] == 3
 if is_py3:
     from io import BytesIO, StringIO
+
     cunicode = str
 else:
     from cStringIO import StringIO
+
     BytesIO = StringIO
     cunicode = unicode

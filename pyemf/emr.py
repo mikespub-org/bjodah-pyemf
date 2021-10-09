@@ -42,46 +42,49 @@ class _HEADER(_EMR_UNKNOWN):
 
     emr_id = 1
     typedef = [
-        (Points(num=2), 'rclBounds'),
-        (Points(num=2), 'rclFrame'),
-        ('i', 'dSignature', 1179469088),
-        ('i', 'nVersion', 0x10000),
-        ('i', 'nBytes', 0),
-        ('i', 'nRecords', 0),
-        ('h', 'nHandles', 0),
-        ('h', 'sReserved', 0),
-        ('i', 'nDescription', 0),
-        ('i', 'offDescription', 0),
-        ('i', 'nPalEntries', 0),
-        (List(num=2), 'szlDevice', [1024, 768]),
-        (List(num=2), 'szlMillimeters', [320, 240]),
-        ('i', 'cbPixelFormat', 0),
-        ('i', 'offPixelFormat', 0),
-        ('i', 'bOpenGL', 0),
-        (List(num=2), 'szlMicrometers'),
-        (EMFString(num='nDescription', offset='offDescription'),
-         'description'),
+        (Points(num=2), "rclBounds"),
+        (Points(num=2), "rclFrame"),
+        ("i", "dSignature", 1179469088),
+        ("i", "nVersion", 0x10000),
+        ("i", "nBytes", 0),
+        ("i", "nRecords", 0),
+        ("h", "nHandles", 0),
+        ("h", "sReserved", 0),
+        ("i", "nDescription", 0),
+        ("i", "offDescription", 0),
+        ("i", "nPalEntries", 0),
+        (List(num=2), "szlDevice", [1024, 768]),
+        (List(num=2), "szlMillimeters", [320, 240]),
+        ("i", "cbPixelFormat", 0),
+        ("i", "offPixelFormat", 0),
+        ("i", "bOpenGL", 0),
+        (List(num=2), "szlMicrometers"),
+        (EMFString(num="nDescription", offset="offDescription"), "description"),
     ]
 
-    def __init__(self, description=''):
+    def __init__(self, description=""):
         _EMR_UNKNOWN.__init__(self)
-        #print(self)
-        #print(self.__class__.format.default)
+        # print(self)
+        # print(self.__class__.format.default)
         # NOTE: rclBounds and rclFrame will be determined at
         # serialize time
 
         self.description = description
         if len(description) > 0:
-            self.description = 'pyemf' + '\0' + description + '\0\0'
+            self.description = "pyemf" + "\0" + description + "\0\0"
         self.nDescription = len(self.description)
 
     def setBounds(self, dc, scaleheader):
-        self.rclBounds = [[dc.bounds_left, dc.bounds_top],
-                          [dc.bounds_right, dc.bounds_bottom]]
-        self.rclFrame = [[dc.frame_left, dc.frame_top],
-                         [dc.frame_right, dc.frame_bottom]]
+        self.rclBounds = [
+            [dc.bounds_left, dc.bounds_top],
+            [dc.bounds_right, dc.bounds_bottom],
+        ]
+        self.rclFrame = [
+            [dc.frame_left, dc.frame_top],
+            [dc.frame_right, dc.frame_bottom],
+        ]
 
-        #print(self)
+        # print(self)
         if scaleheader:
             self.szlDevice[0] = dc.pixelwidth
             self.szlDevice[1] = dc.pixelheight
@@ -101,9 +104,9 @@ class _HEADER(_EMR_UNKNOWN):
 class _POLYBEZIER(_EMR_UNKNOWN):
     emr_id = 2
     typedef = [
-        (Points(num=2), 'rclBounds'),
-        ('i', 'cptl'),
-        (Points(num='cptl', fmt='i'), 'aptl'),
+        (Points(num=2), "rclBounds"),
+        ("i", "cptl"),
+        (Points(num="cptl", fmt="i"), "aptl"),
     ]
 
     def __init__(self, points=[], bounds=((0, 0), (0, 0))):
@@ -137,11 +140,11 @@ class _POLYLINETO(_POLYBEZIERTO):
 class _POLYPOLYLINE(_EMR_UNKNOWN):
     emr_id = 7
     typedef = [
-        (Points(num=2), 'rclBounds'),
-        ('i', 'nPolys'),
-        ('i', 'cptl'),
-        (List(num='nPolys', fmt='i'), 'aPolyCounts'),
-        (Points(num='cptl', fmt='i'), 'aptl'),
+        (Points(num=2), "rclBounds"),
+        ("i", "nPolys"),
+        ("i", "cptl"),
+        (List(num="nPolys", fmt="i"), "aPolyCounts"),
+        (Points(num="cptl", fmt="i"), "aptl"),
     ]
 
     def __init__(self, points=[], polycounts=[], bounds=((0, 0), (0, 0))):
@@ -162,8 +165,8 @@ class _POLYPOLYGON(_POLYPOLYLINE):
 class _SETWINDOWEXTEX(_EMR_UNKNOWN):
     emr_id = 9
     typedef = [
-        ('i', 'szlExtent_cx'),
-        ('i', 'szlExtent_cy'),
+        ("i", "szlExtent_cx"),
+        ("i", "szlExtent_cy"),
     ]
 
     def __init__(self, cx=0, cy=0):
@@ -176,8 +179,8 @@ class _SETWINDOWEXTEX(_EMR_UNKNOWN):
 class _SETWINDOWORGEX(_EMR_UNKNOWN):
     emr_id = 10
     typedef = [
-        ('i', 'ptlOrigin_x'),
-        ('i', 'ptlOrigin_y'),
+        ("i", "ptlOrigin_x"),
+        ("i", "ptlOrigin_y"),
     ]
 
     def __init__(self, x=0, y=0):
@@ -208,11 +211,12 @@ class _EOF(_EMR_UNKNOWN):
     Windows generated .emf file that only has a 12 byte long EOF
     record.  I don't know if that's a broken example or what, but
     both Windows progs and OpenOffice seem to handle it."""
+
     emr_id = 14
     typedef = [
-        ('i', 'nPalEntries', 0),
-        ('i', 'offPalEntries', 0),
-        ('i', 'nSizeLast', 0)
+        ("i", "nPalEntries", 0),
+        ("i", "offPalEntries", 0),
+        ("i", "nSizeLast", 0),
     ]
 
     def __init__(self):
@@ -222,11 +226,7 @@ class _EOF(_EMR_UNKNOWN):
 @register
 class _SETPIXELV(_EMR_UNKNOWN):
     emr_id = 15
-    typedef = [
-        ('i', 'ptlPixel_x'),
-        ('i', 'ptlPixel_y'),
-        ('i', 'crColor')
-    ]
+    typedef = [("i", "ptlPixel_x"), ("i", "ptlPixel_y"), ("i", "crColor")]
 
     def __init__(self, x=0, y=0, color=0):
         _EMR_UNKNOWN.__init__(self)
@@ -238,7 +238,7 @@ class _SETPIXELV(_EMR_UNKNOWN):
 @register
 class _SETMAPPERFLAGS(_EMR_UNKNOWN):
     emr_id = 16
-    emr_format = [('i', 'dwFlags', 0)]
+    emr_format = [("i", "dwFlags", 0)]
 
     def __init__(self):
         _EMR_UNKNOWN.__init__(self)
@@ -247,7 +247,7 @@ class _SETMAPPERFLAGS(_EMR_UNKNOWN):
 @register
 class _SETMAPMODE(_EMR_UNKNOWN):
     emr_id = 17
-    typedef = [('i', 'iMode', MM_ANISOTROPIC)]
+    typedef = [("i", "iMode", MM_ANISOTROPIC)]
 
     def __init__(self, mode=MM_ANISOTROPIC, first=0, last=MM_MAX):
         _EMR_UNKNOWN.__init__(self)
@@ -290,13 +290,14 @@ class _SETTEXTALIGN(_SETMAPMODE):
     def __init__(self, mode=TA_BASELINE):
         _SETMAPMODE.__init__(self, mode, last=TA_MASK)
 
+
 # define EMR_SETCOLORADJUSTMENT	23
 
 
 @register
 class _SETTEXTCOLOR(_EMR_UNKNOWN):
     emr_id = 24
-    typedef = [('i', 'crColor', 0)]
+    typedef = [("i", "crColor", 0)]
 
     def __init__(self, color=0):
         _EMR_UNKNOWN.__init__(self)
@@ -307,6 +308,7 @@ class _SETTEXTCOLOR(_EMR_UNKNOWN):
 class _SETBKCOLOR(_SETTEXTCOLOR):
     emr_id = 25
 
+
 # define EMR_OFFSETCLIPRGN	26
 
 
@@ -314,8 +316,8 @@ class _SETBKCOLOR(_SETTEXTCOLOR):
 class _MOVETOEX(_EMR_UNKNOWN):
     emr_id = 27
     typedef = [
-        ('i', 'ptl_x'),
-        ('i', 'ptl_y'),
+        ("i", "ptl_x"),
+        ("i", "ptl_y"),
     ]
 
     def __init__(self, x=0, y=0):
@@ -326,6 +328,7 @@ class _MOVETOEX(_EMR_UNKNOWN):
     def getBounds(self):
         return ((self.ptl_x, self.ptl_y), (self.ptl_x, self.ptl_y))
 
+
 # define EMR_SETMETARGN	28
 # define EMR_EXCLUDECLIPRECT	29
 # define EMR_INTERSECTCLIPRECT	30
@@ -335,10 +338,10 @@ class _MOVETOEX(_EMR_UNKNOWN):
 class _SCALEVIEWPORTEXTEX(_EMR_UNKNOWN):
     emr_id = 31
     typedef = [
-        ('i', 'xNum', 1),
-        ('i', 'xDenom', 1),
-        ('i', 'yNum', 1),
-        ('i', 'yDenom', 1),
+        ("i", "xNum", 1),
+        ("i", "xDenom", 1),
+        ("i", "yNum", 1),
+        ("i", "yDenom", 1),
     ]
 
     def __init__(self, xn=1, xd=1, yn=1, yd=1):
@@ -362,7 +365,7 @@ class _SAVEDC(_EMR_UNKNOWN):
 @register
 class _RESTOREDC(_EMR_UNKNOWN):
     emr_id = 34
-    typedef = [('i', 'iRelative')]
+    typedef = [("i", "iRelative")]
 
     def __init__(self, rel=-1):
         _EMR_UNKNOWN.__init__(self)
@@ -373,12 +376,12 @@ class _RESTOREDC(_EMR_UNKNOWN):
 class _SETWORLDTRANSFORM(_EMR_UNKNOWN):
     emr_id = 35
     typedef = [
-        ('f', 'eM11'),
-        ('f', 'eM12'),
-        ('f', 'eM21'),
-        ('f', 'eM22'),
-        ('f', 'eDx'),
-        ('f', 'eDy'),
+        ("f", "eM11"),
+        ("f", "eM12"),
+        ("f", "eM21"),
+        ("f", "eM22"),
+        ("f", "eDx"),
+        ("f", "eDy"),
     ]
 
     def __init__(self, em11=1.0, em12=0.0, em21=0.0, em22=1.0, edx=0.0, edy=0.0):
@@ -395,16 +398,25 @@ class _SETWORLDTRANSFORM(_EMR_UNKNOWN):
 class _MODIFYWORLDTRANSFORM(_EMR_UNKNOWN):
     emr_id = 36
     typedef = [
-        ('f', 'eM11'),
-        ('f', 'eM12'),
-        ('f', 'eM21'),
-        ('f', 'eM22'),
-        ('f', 'eDx'),
-        ('f', 'eDy'),
-        ('i', 'iMode'),
+        ("f", "eM11"),
+        ("f", "eM12"),
+        ("f", "eM21"),
+        ("f", "eM22"),
+        ("f", "eDx"),
+        ("f", "eDy"),
+        ("i", "iMode"),
     ]
 
-    def __init__(self, em11=1.0, em12=0.0, em21=0.0, em22=1.0, edx=0.0, edy=0.0, mode=MWT_IDENTITY):
+    def __init__(
+        self,
+        em11=1.0,
+        em12=0.0,
+        em21=0.0,
+        em22=1.0,
+        edx=0.0,
+        edy=0.0,
+        mode=MWT_IDENTITY,
+    ):
         _EMR_UNKNOWN.__init__(self)
         self.eM11 = em11
         self.eM12 = em12
@@ -423,12 +435,14 @@ class _SELECTOBJECT(_EMR_UNKNOWN):
     replace the previous item of that class.  Note that stock
     objects have their high order bit set, so the handle must be
     an unsigned int."""
+
     emr_id = 37
-    typedef = [('I', 'handle')]
+    typedef = [("I", "handle")]
 
     def __init__(self, dc=None, handle=0):
         _EMR_UNKNOWN.__init__(self)
         self.handle = handle
+
 
 # Note: a line will still be drawn when the linewidth==0.  To force an
 # invisible line, use style=PS_NULL
@@ -438,11 +452,11 @@ class _SELECTOBJECT(_EMR_UNKNOWN):
 class _CREATEPEN(_EMR_UNKNOWN):
     emr_id = 38
     typedef = [
-        ('i', 'handle', 0),
-        ('i', 'lopn_style'),
-        ('i', 'lopn_width'),
-        ('i', 'lopn_unused', 0),
-        ('i', 'lopn_color'),
+        ("i", "handle", 0),
+        ("i", "lopn_style"),
+        ("i", "lopn_width"),
+        ("i", "lopn_unused", 0),
+        ("i", "lopn_color"),
     ]
 
     def __init__(self, style=PS_SOLID, width=1, color=0):
@@ -459,10 +473,10 @@ class _CREATEPEN(_EMR_UNKNOWN):
 class _CREATEBRUSHINDIRECT(_EMR_UNKNOWN):
     emr_id = 39
     typedef = [
-        ('i', 'handle', 0),
-        ('I', 'lbStyle'),
-        ('i', 'lbColor'),
-        ('I', 'lbHatch'),
+        ("i", "handle", 0),
+        ("I", "lbStyle"),
+        ("i", "lbColor"),
+        ("I", "lbHatch"),
     ]
 
     def __init__(self, style=BS_SOLID, hatch=HS_HORIZONTAL, color=0):
@@ -484,11 +498,11 @@ class _DELETEOBJECT(_SELECTOBJECT):
 class _ANGLEARC(_EMR_UNKNOWN):
     emr_id = 41
     typedef = [
-        ('i', 'ptlCenter_x'),
-        ('i', 'ptlCenter_y'),
-        ('i', 'nRadius'),
-        ('f', 'eStartAngle'),
-        ('f', 'eSweepAngle'),
+        ("i", "ptlCenter_x"),
+        ("i", "ptlCenter_y"),
+        ("i", "nRadius"),
+        ("f", "eStartAngle"),
+        ("f", "eSweepAngle"),
     ]
 
     def __init__(self):
@@ -499,7 +513,7 @@ class _ANGLEARC(_EMR_UNKNOWN):
 class _ELLIPSE(_EMR_UNKNOWN):
     emr_id = 42
     typedef = [
-        (Points(num=2), 'rclBox'),
+        (Points(num=2), "rclBox"),
     ]
 
     def __init__(self, box=((0, 0), (0, 0))):
@@ -515,11 +529,7 @@ class _RECTANGLE(_ELLIPSE):
 @register
 class _ROUNDRECT(_EMR_UNKNOWN):
     emr_id = 44
-    typedef = [
-        (Points(num=2), 'rclBox'),
-        ('i', 'szlCorner_cx'),
-        ('i', 'szlCorner_cy')
-    ]
+    typedef = [(Points(num=2), "rclBox"), ("i", "szlCorner_cx"), ("i", "szlCorner_cy")]
 
     def __init__(self, box=((0, 0), (0, 0)), cx=0, cy=0):
         _EMR_UNKNOWN.__init__(self)
@@ -532,14 +542,14 @@ class _ROUNDRECT(_EMR_UNKNOWN):
 class _ARC(_EMR_UNKNOWN):
     emr_id = 45
     typedef = [
-        (Points(num=2), 'rclBox'),
-        ('i', 'ptlStart_x'),
-        ('i', 'ptlStart_y'),
-        ('i', 'ptlEnd_x'),
-        ('i', 'ptlEnd_y')]
+        (Points(num=2), "rclBox"),
+        ("i", "ptlStart_x"),
+        ("i", "ptlStart_y"),
+        ("i", "ptlEnd_x"),
+        ("i", "ptlEnd_y"),
+    ]
 
-    def __init__(self, box=((0, 0), (0, 0)),
-                 xstart=0, ystart=0, xend=0, yend=0):
+    def __init__(self, box=((0, 0), (0, 0)), xstart=0, ystart=0, xend=0, yend=0):
         _EMR_UNKNOWN.__init__(self)
         self.rclBox = [[box[0][0], box[0][1]], [box[1][0], box[1][1]]]
         self.ptlStart_x = xstart
@@ -561,10 +571,11 @@ class _PIE(_ARC):
 @register
 class _SELECTPALETTE(_EMR_UNKNOWN):
     emr_id = 48
-    typedef = [('i', 'handle')]
+    typedef = [("i", "handle")]
 
     def __init__(self):
         _EMR_UNKNOWN.__init__(self)
+
 
 # Stub class for palette
 
@@ -572,13 +583,14 @@ class _SELECTPALETTE(_EMR_UNKNOWN):
 @register
 class _CREATEPALETTE(_EMR_UNKNOWN):
     emr_id = 49
-    typedef = [('i', 'handle', 0)]
+    typedef = [("i", "handle", 0)]
 
     def __init__(self):
         _EMR_UNKNOWN.__init__(self)
 
     def hasHandle(self):
         return True
+
 
 # define EMR_SETPALETTEENTRIES	50
 # define EMR_RESIZEPALETTE	51
@@ -602,16 +614,18 @@ class _ARCTO(_ARC):
         # bounds.
         return self.rclBox
 
+
 # define EMR_POLYDRAW	56
 
 
 @register
 class _SETARCDIRECTION(_EMR_UNKNOWN):
     emr_id = 57
-    typedef = [('i', 'iArcDirection')]
+    typedef = [("i", "iArcDirection")]
 
     def __init__(self):
         _EMR_UNKNOWN.__init__(self)
+
 
 # define EMR_SETMITERLIMIT	58
 
@@ -634,7 +648,7 @@ class _CLOSEFIGURE(_EMR_UNKNOWN):
 @register
 class _FILLPATH(_EMR_UNKNOWN):
     emr_id = 62
-    typedef = [(Points(num=2), 'rclBounds')]
+    typedef = [(Points(num=2), "rclBounds")]
 
     def __init__(self, bounds=((0, 0), (0, 0))):
         _EMR_UNKNOWN.__init__(self)
@@ -669,6 +683,7 @@ class _SELECTCLIPPATH(_SETMAPMODE):
 
     @gdi: SelectClipPath
     """
+
     emr_id = 67
 
     def __init__(self, mode=RGN_COPY):
@@ -681,7 +696,9 @@ class _ABORTPATH(_EMR_UNKNOWN):
     """Discards any current path, whether open or closed.
 
     @gdi: AbortPath"""
+
     emr_id = 68
+
 
 # define EMR_GDICOMMENT	70
 @register
@@ -690,20 +707,22 @@ class _GDICOMMENT(_EMR_UNKNOWN):
     """Application-specific data - https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-emrgdicomment
 
     @gdi: Comment"""
+
     emr_id = 70
     typedef = [
-        ('i', 'cbData'),
-        (EMFString(num='cbData', size=1), 'comment'),
+        ("i", "cbData"),
+        (EMFString(num="cbData", size=1), "comment"),
     ]
 
     def __init__(self, txt=""):
         _EMR_UNKNOWN.__init__(self)
         if isinstance(txt, cunicode):
-            self.comment = txt.encode('utf-16le')
+            self.comment = txt.encode("utf-16le")
         else:
             self.comment = txt
         self.charsize = 1
-        #print(self)
+        # print(self)
+
 
 # define EMR_FILLRGN	71
 # define EMR_FRAMERGN	72
@@ -727,23 +746,25 @@ class _STRETCHDIBITS(_EMR_UNKNOWN):
 
     @gdi: StretchDIBits
     """
+
     emr_id = 81
     typedef = [
-        (Points(num=2), 'rclBounds'),
-        ('i', 'xDest'),
-        ('i', 'yDest'),
-        ('i', 'xSrc'),
-        ('i', 'ySrc'),
-        ('i', 'cxSrc'),
-        ('i', 'cySrc'),
-        ('i', 'offBmiSrc'),
-        ('i', 'cbBmiSrc'),
-        ('i', 'offBitsSrc'),
-        ('i', 'cbBitsSrc'),
-        ('i', 'iUsageSrc'),
-        ('i', 'dwRop'),
-        ('i', 'cxDest'),
-        ('i', 'cyDest')]
+        (Points(num=2), "rclBounds"),
+        ("i", "xDest"),
+        ("i", "yDest"),
+        ("i", "xSrc"),
+        ("i", "ySrc"),
+        ("i", "cxSrc"),
+        ("i", "cySrc"),
+        ("i", "offBmiSrc"),
+        ("i", "cbBmiSrc"),
+        ("i", "offBitsSrc"),
+        ("i", "cbBitsSrc"),
+        ("i", "iUsageSrc"),
+        ("i", "dwRop"),
+        ("i", "cxDest"),
+        ("i", "cyDest"),
+    ]
 
     def __init__(self):
         _EMR_UNKNOWN.__init__(self)
@@ -756,49 +777,61 @@ class _EXTCREATEFONTINDIRECTW(_EMR_UNKNOWN):
 
     emr_id = 82
     typedef = [
-        ('i', 'handle'),
-        ('i', 'lfHeight'),
-        ('i', 'lfWidth'),
-        ('i', 'lfEscapement'),
-        ('i', 'lfOrientation'),
-        ('i', 'lfWeight'),
-        ('B', 'lfItalic'),
-        ('B', 'lfUnderline'),
-        ('B', 'lfStrikeOut'),
-        ('B', 'lfCharSet'),
-        ('B', 'lfOutPrecision'),
-        ('B', 'lfClipPrecision'),
-        ('B', 'lfQuality'),
-        ('B', 'lfPitchAndFamily'),
-        (EMFString(num=32, size=2), 'lfFaceName'),
+        ("i", "handle"),
+        ("i", "lfHeight"),
+        ("i", "lfWidth"),
+        ("i", "lfEscapement"),
+        ("i", "lfOrientation"),
+        ("i", "lfWeight"),
+        ("B", "lfItalic"),
+        ("B", "lfUnderline"),
+        ("B", "lfStrikeOut"),
+        ("B", "lfCharSet"),
+        ("B", "lfOutPrecision"),
+        ("B", "lfClipPrecision"),
+        ("B", "lfQuality"),
+        ("B", "lfPitchAndFamily"),
+        (EMFString(num=32, size=2), "lfFaceName"),
         # ('64s','lfFaceName',), # really a 32 char unicode string
-        (EMFString(num=64, size=2), 'elfFullName'),
+        (EMFString(num=64, size=2), "elfFullName"),
         # ('128s','elfFullName','\0'*128), # really 64 char unicode str
-        (EMFString(num=32, size=2), 'elfStyle'),
+        (EMFString(num=32, size=2), "elfStyle"),
         # ('64s','elfStyle','\0'*64), # really 32 char unicode str
-        ('i', 'elfVersion', 0),
-        ('i', 'elfStyleSize', 0),
-        ('i', 'elfMatch', 0),
-        ('i', 'elfReserved', 0),
-        ('i', 'elfVendorId', 0),
-        ('i', 'elfCulture', 0),
-        ('B', 'elfPanose_bFamilyType', 1),
-        ('B', 'elfPanose_bSerifStyle', 1),
-        ('B', 'elfPanose_bWeight', 1),
-        ('B', 'elfPanose_bProportion', 1),
-        ('B', 'elfPanose_bContrast', 1),
-        ('B', 'elfPanose_bStrokeVariation', 1),
-        ('B', 'elfPanose_bArmStyle', 1),
-        ('B', 'elfPanose_bLetterform', 1),
-        ('B', 'elfPanose_bMidline', 1),
-        ('B', 'elfPanose_bXHeight', 1)]
+        ("i", "elfVersion", 0),
+        ("i", "elfStyleSize", 0),
+        ("i", "elfMatch", 0),
+        ("i", "elfReserved", 0),
+        ("i", "elfVendorId", 0),
+        ("i", "elfCulture", 0),
+        ("B", "elfPanose_bFamilyType", 1),
+        ("B", "elfPanose_bSerifStyle", 1),
+        ("B", "elfPanose_bWeight", 1),
+        ("B", "elfPanose_bProportion", 1),
+        ("B", "elfPanose_bContrast", 1),
+        ("B", "elfPanose_bStrokeVariation", 1),
+        ("B", "elfPanose_bArmStyle", 1),
+        ("B", "elfPanose_bLetterform", 1),
+        ("B", "elfPanose_bMidline", 1),
+        ("B", "elfPanose_bXHeight", 1),
+    ]
 
-    def __init__(self, height=0, width=0, escapement=0, orientation=0,
-                 weight=FW_NORMAL, italic=0, underline=0, strike_out=0,
-                 charset=ANSI_CHARSET, out_precision=OUT_DEFAULT_PRECIS,
-                 clip_precision=CLIP_DEFAULT_PRECIS,
-                 quality=DEFAULT_QUALITY,
-                 pitch_family=DEFAULT_PITCH | FF_DONTCARE, name='Times New Roman'):
+    def __init__(
+        self,
+        height=0,
+        width=0,
+        escapement=0,
+        orientation=0,
+        weight=FW_NORMAL,
+        italic=0,
+        underline=0,
+        strike_out=0,
+        charset=ANSI_CHARSET,
+        out_precision=OUT_DEFAULT_PRECIS,
+        clip_precision=CLIP_DEFAULT_PRECIS,
+        quality=DEFAULT_QUALITY,
+        pitch_family=DEFAULT_PITCH | FF_DONTCARE,
+        name="Times New Roman",
+    ):
         _EMR_UNKNOWN.__init__(self)
         self.lfHeight = height
         self.lfWidth = width
@@ -821,8 +854,8 @@ class _EXTCREATEFONTINDIRECTW(_EMR_UNKNOWN):
         if len(name) > 32:
             name = name[0:32]
         else:
-            name += '\0' * (32 - len(name))
-        self.lfFaceName = name.encode('utf-16le')
+            name += "\0" * (32 - len(name))
+        self.lfFaceName = name.encode("utf-16le")
         # print "lfFaceName=%s" % self.lfFaceName
 
     def hasHandle(self):
@@ -833,19 +866,19 @@ class _EXTCREATEFONTINDIRECTW(_EMR_UNKNOWN):
 class _EXTTEXTOUTA(_EMR_UNKNOWN):
     emr_id = 83
     typedef = [
-        (Points(num=2), 'rclBounds', [[0, 0], [-1, -1]]),
-        ('i', 'iGraphicsMode', GM_COMPATIBLE),
-        ('f', 'exScale', 1.0),
-        ('f', 'eyScale', 1.0),
-        ('i', 'ptlReference_x'),
-        ('i', 'ptlReference_y'),
-        ('i', 'nChars'),
-        ('i', 'offString', 0),
-        ('i', 'fOptions', 0),
-        (Points(num=2), 'rcl', [[0, 0], [-1, -1]]),
-        ('i', 'offDx', 0),
-        (List(num='nChars', fmt='i', offset='offDx'), 'dx'),
-        (EMFString(num='nChars', size=1, offset='offString'), 'string'),
+        (Points(num=2), "rclBounds", [[0, 0], [-1, -1]]),
+        ("i", "iGraphicsMode", GM_COMPATIBLE),
+        ("f", "exScale", 1.0),
+        ("f", "eyScale", 1.0),
+        ("i", "ptlReference_x"),
+        ("i", "ptlReference_y"),
+        ("i", "nChars"),
+        ("i", "offString", 0),
+        ("i", "fOptions", 0),
+        (Points(num=2), "rcl", [[0, 0], [-1, -1]]),
+        ("i", "offDx", 0),
+        (List(num="nChars", fmt="i", offset="offDx"), "dx"),
+        (EMFString(num="nChars", size=1, offset="offString"), "string"),
     ]
 
     def __init__(self, x=0, y=0, txt=""):
@@ -853,7 +886,7 @@ class _EXTTEXTOUTA(_EMR_UNKNOWN):
         self.ptlReference_x = x
         self.ptlReference_y = y
         if isinstance(txt, cunicode):
-            self.string = txt.encode('utf-16le')
+            self.string = txt.encode("utf-16le")
         else:
             self.string = txt
         self.charsize = 1
@@ -864,22 +897,22 @@ class _EXTTEXTOUTA(_EMR_UNKNOWN):
 class _EXTTEXTOUTW(_EXTTEXTOUTA):
     emr_id = 84
     typedef = [
-        (Points(num=2), 'rclBounds', [[0, 0], [-1, -1]]),
-        ('i', 'iGraphicsMode', GM_COMPATIBLE),
-        ('f', 'exScale', 1.0),
-        ('f', 'eyScale', 1.0),
-        ('i', 'ptlReference_x'),
-        ('i', 'ptlReference_y'),
-        ('i', 'nChars'),
-        ('i', 'offString', 0),
-        ('i', 'fOptions', 0),
-        (Points(num=2), 'rcl', [[0, 0], [-1, -1]]),
-        ('i', 'offDx', 0),
-        (List(num='nChars', fmt='i', offset='offDx'), 'dx'),
-        (EMFString(num='nChars', size=2, offset='offString'), 'string'),
+        (Points(num=2), "rclBounds", [[0, 0], [-1, -1]]),
+        ("i", "iGraphicsMode", GM_COMPATIBLE),
+        ("f", "exScale", 1.0),
+        ("f", "eyScale", 1.0),
+        ("i", "ptlReference_x"),
+        ("i", "ptlReference_y"),
+        ("i", "nChars"),
+        ("i", "offString", 0),
+        ("i", "fOptions", 0),
+        (Points(num=2), "rcl", [[0, 0], [-1, -1]]),
+        ("i", "offDx", 0),
+        (List(num="nChars", fmt="i", offset="offDx"), "dx"),
+        (EMFString(num="nChars", size=2, offset="offString"), "string"),
     ]
 
-    def __init__(self, x=0, y=0, txt=''):
+    def __init__(self, x=0, y=0, txt=""):
         _EXTTEXTOUTA.__init__(self, x, y, txt)
         self.charsize = 2
 
@@ -888,9 +921,9 @@ class _EXTTEXTOUTW(_EXTTEXTOUTA):
 class _POLYBEZIER16(_POLYBEZIER):
     emr_id = 85
     typedef = [
-        (Points(num=2), 'rclBounds'),
-        ('i', 'cptl'),
-        (Points(num='cptl', fmt='h'), 'aptl'),
+        (Points(num=2), "rclBounds"),
+        ("i", "cptl"),
+        (Points(num="cptl", fmt="h"), "aptl"),
     ]
 
 
@@ -908,9 +941,9 @@ class _POLYLINE16(_POLYBEZIER16):
 class _POLYBEZIERTO16(_POLYBEZIERTO):
     emr_id = 88
     typedef = [
-        (Points(num=2), 'rclBounds'),
-        ('i', 'cptl'),
-        (Points(num='cptl', fmt='h'), 'aptl'),
+        (Points(num=2), "rclBounds"),
+        ("i", "cptl"),
+        (Points(num="cptl", fmt="h"), "aptl"),
     ]
 
 
@@ -923,17 +956,18 @@ class _POLYLINETO16(_POLYBEZIERTO16):
 class _POLYPOLYLINE16(_POLYPOLYLINE):
     emr_id = 90
     typedef = [
-        (Points(num=2), 'rclBounds'),
-        ('i', 'nPolys'),
-        ('i', 'cptl'),
-        (List(num='nPolys', fmt='i'), 'aPolyCounts'),
-        (Points(num='cptl', fmt='h'), 'aptl'),
+        (Points(num=2), "rclBounds"),
+        ("i", "nPolys"),
+        ("i", "cptl"),
+        (List(num="nPolys", fmt="i"), "aPolyCounts"),
+        (Points(num="cptl", fmt="h"), "aptl"),
     ]
 
 
 @register
 class _POLYPOLYGON16(_POLYPOLYLINE16):
     emr_id = 91
+
 
 # define EMR_POLYDRAW16	92
 
@@ -944,6 +978,7 @@ class _POLYPOLYGON16(_POLYPOLYLINE16):
 class _CREATEMONOBRUSH(_CREATEPALETTE):
     emr_id = 93
 
+
 # Stub class for device independent bitmap brush
 
 
@@ -951,12 +986,14 @@ class _CREATEMONOBRUSH(_CREATEPALETTE):
 class _CREATEDIBPATTERNBRUSHPT(_CREATEPALETTE):
     emr_id = 94
 
+
 # Stub class for extended pen
 
 
 @register
 class _EXTCREATEPEN(_CREATEPALETTE):
     emr_id = 95
+
 
 # define EMR_POLYTEXTOUTA	96
 # define EMR_POLYTEXTOUTW	97
@@ -969,10 +1006,12 @@ class _SETICMMODE(_SETMAPMODE):
 
     @gdi: SetICMMode
     """
+
     emr_id = 98
 
     def __init__(self, mode=ICM_OFF):
         _SETMAPMODE.__init__(self, mode, first=ICM_MIN, last=ICM_MAX)
+
 
 # define EMR_CREATECOLORSPACE	99
 # define EMR_SETCOLORSPACE	100
@@ -996,7 +1035,9 @@ class _ALPHABLEND(_EMR_UNKNOWN):
     """AlphaBlend - https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-emralphablend
 
     @gdi: AlphaBlend"""
+
     emr_id = 114
+
 
 # define EMR_SETLAYOUT     115
 # define EMR_TRANSPARENTBLT        116

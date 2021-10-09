@@ -3,97 +3,134 @@
 import pyemf
 
 import math
-if 'radians' not in dir(math):
+
+if "radians" not in dir(math):
+
     def radians(deg):
-        return deg*math.pi/180.0
-    math.radians=radians
+        return deg * math.pi / 180.0
+
+    math.radians = radians
 
 print("Test of world transformations.")
 
-def path(emf,text,x,y,size=300):
+
+def path(emf, text, x, y, size=300):
     emf.BeginPath()
-    emf.MoveTo(x,y)
-    emf.LineTo(x+100,y+300)
+    emf.MoveTo(x, y)
+    emf.LineTo(x + 100, y + 300)
 
-    emf.ArcTo(x+100,y+300,x+100+size,y+300+size,x+100,y+300,x+100+size,y+300)
+    emf.ArcTo(
+        x + 100,
+        y + 300,
+        x + 100 + size,
+        y + 300 + size,
+        x + 100,
+        y + 300,
+        x + 100 + size,
+        y + 300,
+    )
 
-    emf.PolylineTo([(x+100+size,y+300),(x+150+size,y+200),(x+200+size,y+300),(x+250+size,y+100)])
+    emf.PolylineTo(
+        [
+            (x + 100 + size, y + 300),
+            (x + 150 + size, y + 200),
+            (x + 200 + size, y + 300),
+            (x + 250 + size, y + 100),
+        ]
+    )
 
-    emf.PolyBezierTo([(x+100+size,y+50),(x+size,y+150),(x+size-100,y+100)])
+    emf.PolyBezierTo(
+        [(x + 100 + size, y + 50), (x + size, y + 150), (x + size - 100, y + 100)]
+    )
 
     emf.CloseFigure()
     emf.EndPath()
 
     emf.StrokeAndFillPath()
-    emf.TextOut(x,y,text);
-    
+    emf.TextOut(x, y, text)
 
-width=6
-height=4
-dpi=300
-pointstopixels=dpi/72.0
 
-emf=pyemf.EMF(width,height,dpi,verbose=False)
-brush=emf.CreateSolidBrush((0x7f,0x7f,0xff))
+width = 6
+height = 4
+dpi = 300
+pointstopixels = dpi / 72.0
+
+emf = pyemf.EMF(width, height, dpi, verbose=False)
+brush = emf.CreateSolidBrush((0x7F, 0x7F, 0xFF))
 emf.SelectObject(brush)
-dashed=emf.CreatePen(pyemf.PS_DASHDOT,1,(0xf0,0x00,0x80))
+dashed = emf.CreatePen(pyemf.PS_DASHDOT, 1, (0xF0, 0x00, 0x80))
 emf.SelectObject(dashed)
 
 emf.SetBkMode(pyemf.TRANSPARENT)
 # set baseline for text to be top left corner
-emf.SetTextAlign(pyemf.TA_TOP|pyemf.TA_LEFT) 
-emf.SetTextColor((0,0,0))
-font = emf.CreateFont( -50, 0, 0, 0, pyemf.FW_NORMAL, 0, 0, 0,
-                       pyemf.ANSI_CHARSET, pyemf.OUT_TT_PRECIS,
-                       pyemf.CLIP_TT_ALWAYS, pyemf.PROOF_QUALITY,
-                       pyemf.DEFAULT_PITCH | pyemf.FF_DONTCARE,
-                       "Helvetica" )
+emf.SetTextAlign(pyemf.TA_TOP | pyemf.TA_LEFT)
+emf.SetTextColor((0, 0, 0))
+font = emf.CreateFont(
+    -50,
+    0,
+    0,
+    0,
+    pyemf.FW_NORMAL,
+    0,
+    0,
+    0,
+    pyemf.ANSI_CHARSET,
+    pyemf.OUT_TT_PRECIS,
+    pyemf.CLIP_TT_ALWAYS,
+    pyemf.PROOF_QUALITY,
+    pyemf.DEFAULT_PITCH | pyemf.FF_DONTCARE,
+    "Helvetica",
+)
 
 emf.SelectObject(font)
 
-dx=50
-dy=50
-dotted=emf.CreatePen(pyemf.PS_DOT,1,(0x02,0x03,0x04))
+dx = 50
+dy = 50
+dotted = emf.CreatePen(pyemf.PS_DOT, 1, (0x02, 0x03, 0x04))
 emf.SelectObject(dotted)
-emf.Polyline([(dx,0),(dx,dy),(0,dy)])
+emf.Polyline([(dx, 0), (dx, dy), (0, dy)])
 emf.SelectObject(dashed)
 
 
-emf.SetWorldTransform(dx=dx,dy=dy)
-path(emf,"translate (%d,%d) loc: 0,0" % (dx,dy),0,0,300)
+emf.SetWorldTransform(dx=dx, dy=dy)
+path(emf, "translate (%d,%d) loc: 0,0" % (dx, dy), 0, 0, 300)
 
 
-
-dx=500
-dy=800
+dx = 500
+dy = 800
 emf.ModifyWorldTransform(pyemf.MWT_IDENTITY)
 emf.SelectObject(dotted)
-emf.Polyline([(dx,0),(dx,dy),(0,dy)])
+emf.Polyline([(dx, 0), (dx, dy), (0, dy)])
 emf.SelectObject(dashed)
 
-d=45
-angle=math.radians(d)
-emf.SetWorldTransform(math.cos(angle),-math.sin(angle),
-                      math.sin(angle),math.cos(angle),dx,dy)
-path(emf,"rotate %d deg, translate (%d,%d) loc: 0,0" % (d,dx,dy),0,0,300)
+d = 45
+angle = math.radians(d)
+emf.SetWorldTransform(
+    math.cos(angle), -math.sin(angle), math.sin(angle), math.cos(angle), dx, dy
+)
+path(emf, "rotate %d deg, translate (%d,%d) loc: 0,0" % (d, dx, dy), 0, 0, 300)
 
 
-
-
-dx=1000
-dy=1000
+dx = 1000
+dy = 1000
 # reset broken transform
 emf.SetWorldTransform()
 emf.SelectObject(dotted)
-emf.Polyline([(dx,0),(dx,dy),(0,dy)])
+emf.Polyline([(dx, 0), (dx, dy), (0, dy)])
 emf.SelectObject(dashed)
 
-d=80
-angle=math.radians(d)
-emf.ModifyWorldTransform(pyemf.MWT_RIGHTMULTIPLY,
-                         math.cos(angle),-math.sin(angle),
-                         math.sin(angle),math.cos(angle),dx,dy)
-path(emf,"rotate %d deg, translate (%d,%d) loc: 0,0" % (d,dx,dy),0,0,300)
+d = 80
+angle = math.radians(d)
+emf.ModifyWorldTransform(
+    pyemf.MWT_RIGHTMULTIPLY,
+    math.cos(angle),
+    -math.sin(angle),
+    math.sin(angle),
+    math.cos(angle),
+    dx,
+    dy,
+)
+path(emf, "rotate %d deg, translate (%d,%d) loc: 0,0" % (d, dx, dy), 0, 0, 300)
 
 
-ret=emf.save("test-worldtransform1.emf")
+ret = emf.save("test-worldtransform1.emf")
