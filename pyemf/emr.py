@@ -19,10 +19,10 @@
 # Boston, MA  02110-1301, USA.
 
 
-from .record import _EMR_UNKNOWN
-from .field import *
-from .constants import *
 from .compat import cunicode
+from .constants import *
+from .field import *
+from .record import _EMR_UNKNOWN
 
 _emrmap = {}
 

@@ -29,7 +29,7 @@ y += size
 emf.Pie(x, y, x + size, y + size, x, y, x, y + size)
 
 x += size
-emf.Pie(x, y, x + size, y + size, x, y + (int(size / 2)), x, y + (int(size / 2)))
+emf.Pie(x, y, x + size, y + size, x, y + int(size / 2), x, y + int(size / 2))
 print("after Pie")
 
 

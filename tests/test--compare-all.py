@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 
-import os, sys
-import glob
 import filecmp
+import glob
+import os
+import sys
 
 import pyemf
 

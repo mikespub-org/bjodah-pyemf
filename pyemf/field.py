@@ -128,7 +128,7 @@ class Field:
         return num
 
     def getOffset(self, obj):
-        if self.offset == None:
+        if self.offset is None:
             return None
         offset = 0
         if isinstance(self.offset, int):
@@ -215,7 +215,7 @@ class String(Field):
 
     def unpack(self, obj, name, data, ptr):
         offset = self.getOffset(obj)
-        if offset == None:
+        if offset is None:
             pass
         elif offset > 0:
             ptr = offset
@@ -280,7 +280,7 @@ class List(Field):
         values = []
 
         offset = self.getOffset(obj)
-        if offset == None:
+        if offset is None:
             pass
         elif offset > 0:
             ptr = offset
@@ -327,7 +327,7 @@ class Tuples(Field):
         values = []
 
         offset = self.getOffset(obj)
-        if offset == None:
+        if offset is None:
             pass
         elif offset > 0:
             ptr = offset
@@ -351,7 +351,7 @@ class Tuples(Field):
         fh = BytesIO()
         size = 0
         if self.debug:
-            print("pack: value=%s" % (str(value)))
+            print("pack: value=%s" % str(value))
         for val in value:
             fh.write(struct_pack(self.fmt, *val))
         return fh.getvalue()
@@ -404,7 +404,7 @@ class EMFString(Field):
 
     def unpack(self, obj, name, data, ptr):
         offset = self.getOffset(obj)
-        if offset == None:
+        if offset is None:
             pass
         elif offset > 0:
             ptr = offset

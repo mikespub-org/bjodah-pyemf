@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
-import pyemf
-
 import math
+
+import pyemf
 
 if "radians" not in dir(math):
 

@@ -17,7 +17,7 @@ else:
     matplotlib.use("Agg")
     ext = ".png"
 
-from pylab import *
+from pylab import legend, plot, savefig, title, xlabel, ylabel
 
 plot(
     [

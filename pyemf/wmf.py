@@ -20,9 +20,9 @@
 # Boston, MA  02110-1301, USA.
 
 
+from . import meta
 from .constants import *
 from .dc import _DC
-from . import meta
 
 
 class WMF:

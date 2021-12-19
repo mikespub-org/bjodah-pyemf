@@ -17,7 +17,7 @@ else:
     matplotlib.use("Agg")
     ext = ".png"
 
-from pylab import *
+from pylab import legend, savefig, semilogy, title, xlabel, ylabel
 
 semilogy([12, 49, 78, 42, 0.15, 24, 0.30, 60, 1], label="stuff")
 semilogy([25, 62, 76, 66, 0.6, 54, 30, 53, 0.098], label="$10^{-1}$")

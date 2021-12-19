@@ -1,8 +1,11 @@
 #!/usr/bin/env python
 
-import os, sys, re, os.path
-from io import StringIO
+import os
+import os.path
+import re
+import sys
 from datetime import date
+from io import StringIO
 from optparse import OptionParser
 from string import Template
 

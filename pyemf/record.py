@@ -21,8 +21,8 @@
 
 import struct
 
+from .compat import BytesIO, StringIO
 from .field import Field, StructFormat
-from .compat import StringIO, BytesIO
 
 # Factory for a bunch of flyweight Struct objects
 fmtfactory = {}
@@ -216,7 +216,7 @@ class Record:
         # superclasses, so we have to check if this is a subclass with
         # a different typedef
         if (
-            self.__class__.format == None
+            self.__class__.format is None
             or self.__class__.typedef != self.format.typedef
         ):
             # if self.debug: print "creating format for %d" % id
@@ -334,7 +334,6 @@ class _EMR_UNKNOWN(Record):
         """Hook for subclasses to handle extra data in the record that
         isn't specified by the format statement."""
         self.unhandleddata = data
-        pass
 
     def serialize(self, fh):
         try:

@@ -21,12 +21,12 @@
 
 import struct
 
-from .constants import *
-from .dc import _DC
-from .utils import _normalizeColor
 from . import emr
 from .compat import *
+from .constants import *
+from .dc import _DC
 from .record import _EMR_UNKNOWN
+from .utils import _normalizeColor
 
 
 class EMF:

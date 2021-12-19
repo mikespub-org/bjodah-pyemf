@@ -20,8 +20,6 @@ Part of the pyemf library for handling EMF format files
  Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
  Boston, MA  02110-1301, USA.
 """
-from .constants import *
-from .emf import EMF
 
 # from matplotlib.backend_bases import register_backend
 # register_backend('emf', 'pyemf', 'EMF File Format')

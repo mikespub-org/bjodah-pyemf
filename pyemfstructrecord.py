@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 
-import os, sys, re
 import struct
 from io import StringIO
-import copy
 
 # setup.py requires that these be defined, and the OnceAndOnlyOnce
 # principle is used here.  This is the only place where these values
@@ -86,7 +84,7 @@ class Member:
         return num
 
     def getOffset(self, obj):
-        if self.offset == None:
+        if self.offset is None:
             return None
         offset = 0
         if isinstance(self.offset, int):
@@ -173,7 +171,7 @@ class String(Member):
 
     def unpack(self, obj, name, data, ptr):
         offset = self.getOffset(obj)
-        if offset == None:
+        if offset is None:
             pass
         elif offset > 0:
             ptr = offset
@@ -238,7 +236,7 @@ class List(Member):
         values = []
 
         offset = self.getOffset(obj)
-        if offset == None:
+        if offset is None:
             pass
         elif offset > 0:
             ptr = offset
@@ -285,7 +283,7 @@ class Tuples(Member):
         values = []
 
         offset = self.getOffset(obj)
-        if offset == None:
+        if offset is None:
             pass
         elif offset > 0:
             ptr = offset
@@ -309,7 +307,7 @@ class Tuples(Member):
         fh = StringIO()
         size = 0
         if debug:
-            print("pack: value=%s" % (str(value)))
+            print("pack: value=%s" % str(value))
         for val in value:
             fh.write(struct.pack(self.fmt, *val))
         return fh.getvalue()
@@ -513,7 +511,7 @@ class Record:
         # superclasses, so we have to check if this is a subclass with
         # a different typedef
         if (
-            self.__class__.format == None
+            self.__class__.format is None
             or self.__class__.typedef != self.format.typedef
         ):
             # if debug: print "creating format for %d" % id
